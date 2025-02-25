@@ -6,7 +6,6 @@ const accountSchema = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true
   },
   password: {
     type: String,
@@ -14,9 +13,12 @@ const accountSchema = new Schema({
   },
   dateOfBirth: {
     type: Date,
+    required: true
   },
   email: {
     type: String,
+    required: true,
+    unique: true
   },
   role: {
     type: String,
@@ -25,12 +27,15 @@ const accountSchema = new Schema({
   },
   phoneNumber: {
     type: String,
+    required: true,
+    unique: true
   },
   address: {
     type: String,
   },
   gender: {
     type: Boolean,
+    required: true
   }
 }, {
   timestamps: true
