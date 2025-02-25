@@ -1,5 +1,4 @@
 const Character = require("../Models/DB.js")
-const character = require("../Models/DB.js")
 const mongoose = require("mongoose")
 
 const getAll = async (req, res) => {

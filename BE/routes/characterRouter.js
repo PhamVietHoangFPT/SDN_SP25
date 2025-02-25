@@ -1,6 +1,7 @@
 const express = require('express');
 const characterController = require('../Controller/characterController.js');
 const characterRouter = express.Router();
+
 characterRouter.route('/')
   .get(characterController.getAll)
   .post(characterController.addCharacter)
