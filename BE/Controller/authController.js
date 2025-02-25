@@ -17,7 +17,8 @@ const register = async (req, res) => {
     }
     const newUser = new Account({
       username: username,
-      password: bcrypt.hashSync(password, parseInt(process.env.HASHED_KEY)),
+      password: password,
+      // password: bcrypt.hashSync(password, parseInt(process.env.HASHED_KEY)),
       dateOfBirth: dateOfBirth,
       email: email,
       phoneNumber: phoneNumber,
@@ -41,7 +42,8 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not found' })
     }
-    const matchPassword = await bcrypt.compare(req.body.password, user.password)
+    // const matchPassword = await bcrypt.compare(req.body.password, user.password)
+    const matchPassword = req.body.password === user.password
     if (!matchPassword) {
       return res.status(400).json({ message: 'Incorrect password' })
     }
