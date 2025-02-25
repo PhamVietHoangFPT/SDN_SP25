@@ -4,7 +4,6 @@ const accountRouter = express.Router()
 
 accountRouter.route('/')
   .get(accountController.getAllAccount)
-  .post(accountController.addAccount)
 
 accountRouter.route('/:accountID')
   .delete(accountController.deleteAccount)
