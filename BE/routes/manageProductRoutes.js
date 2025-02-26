@@ -2,7 +2,7 @@ const express = require("express");
 const manageProductController = require("../Controller/manageProductController");
 const manageProductRouter = express.Router();
 
-const checkRole = require("../middlewares/authMiddleware");
+const {checkRole} = require("../middlewares/authMiddleware");
 
 manageProductRouter
   .route("/", checkRole("Manage"))
