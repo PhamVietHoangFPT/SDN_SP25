@@ -2,6 +2,7 @@ const e = require("express");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const customer = require('../constant/constant').customer
 const accountSchema = new Schema({
   username: {
     type: String,
@@ -22,8 +23,7 @@ const accountSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ['Manager', 'Staff', 'Customer'],
-    default: 'Customer'
+    default: customer
   },
   phoneNumber: {
     type: String,

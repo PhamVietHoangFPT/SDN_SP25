@@ -4,14 +4,18 @@ const manageProductController = require("../Controller/manageProductController")
 
 const manageProductRouter = express.Router();
 
-manageProductRouter
-  .route("/")
-  .get(checkRole("Manager"), manageProductController.getAllProduct)
-  .post(checkRole("Manager"), manageProductController.addProduct);
+const checkRole = require("../middlewares/authMiddleware");
+const manager = require("../constant/constant").manager
 
 manageProductRouter
+  .route("/")
+  .get(checkRole(manager), manageProductController.getAllProduct)
+  .post(checkRole(manager), manageProductController.addProduct)
+  
+manageProductRouter
   .route("/:id")
-  .put(checkRole("Manager"), manageProductController.updateProduct)
-  .delete(checkRole("Manager"), manageProductController.deleteProduct);
+  .get(checkRole(manager), manageProductController.getProductById)
+  .put(checkRole(manager), manageProductController.updateProduct)
+  .delete(checkRole(manager), manageProductController.deleteProduct)
 
 module.exports = manageProductRouter;
