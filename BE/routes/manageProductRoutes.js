@@ -1,5 +1,7 @@
 const express = require("express");
+const { checkRole } = require("../middlewares/authMiddleware");
 const manageProductController = require("../Controller/manageProductController");
+
 const manageProductRouter = express.Router();
 
 const checkRole = require("../middlewares/authMiddleware");
