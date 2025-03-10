@@ -7,6 +7,7 @@ const manageProductRouter = express.Router();
 const checkRole = require("../middlewares/authMiddleware");
 const manager = require("../constant/constant").manager
 
+
 manageProductRouter
   .route("/")
   .get(checkRole(manager), manageProductController.getAllProduct)
