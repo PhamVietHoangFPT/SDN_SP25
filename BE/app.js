@@ -16,7 +16,11 @@ const accountRouter = require("./routes/accountRouter");
 const productRouter = require("./routes/productRouter");
 const productReviewRouter = require("./routes/productReviewRouter");
 const authRouter = require("./routes/authRouter");
+
 const articleRoutes = require("./routes/articleRoutes");
+
+const orderRouter = require("./routes/orderRouter");
+
 
 var app = express();
 const uri = process.env.MONGO_URI;
@@ -43,7 +47,11 @@ app.use("/products", productRouter);
 app.use("/productReviews", productReviewRouter);
 app.use("/manage/products", manageProductRouter);
 app.use("/auth", authRouter);
+
 app.use("/articles", articleRoutes);
+
+app.use("/orders", orderRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
