@@ -1,4 +1,5 @@
 const Product = require("../Models/Product");
+const ProductReview = require("../Models/ProductReview");
 
 const getAllProduct = async (req, res) => {
   try {
@@ -81,10 +82,78 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const searchProduct = async (req, res) => {
+  try {
+    const { query, sortBy, order = "asc" } = req.query;
+
+    // Tạo điều kiện tìm kiếm
+    let searchCondition = {};
+    if (query) {
+      searchCondition.name = { $regex: query, $options: "i" }; // Tìm kiếm không phân biệt hoa thường
+    }
+
+    // Xử lý sắp xếp
+    let sortOption = {};
+    if (sortBy) {
+      const orderValue = order === "desc" ? -1 : 1;
+
+      switch (sortBy.toLowerCase()) {
+        case "name":
+          sortOption.name = orderValue;
+          break;
+        case "price":
+          sortOption.price = orderValue;
+          break;
+        case "sold":
+          sortOption.sold = orderValue;
+          break;
+        case "rating":
+          // Tính trung bình rating từ ProductReview
+          const productsWithRating = await Product.aggregate([
+            { $match: searchCondition },
+            {
+              $lookup: {
+                from: "productreviews",
+                localField: "_id",
+                foreignField: "product",
+                as: "reviews",
+              },
+            },
+            {
+              $project: {
+                name: 1,
+                price: 1,
+                description: 1,
+                category: 1,
+                stock: 1,
+                sold: 1,
+                avgRating: { $avg: "$reviews.rating" },
+              },
+            },
+            { $sort: { avgRating: orderValue || 1 } }, // Mặc định ascending nếu không có order
+          ]);
+          return res.status(200).json(productsWithRating);
+        default:
+          return res.status(400).json({ message: "Invalid sortBy parameter" });
+      }
+    }
+
+    // Thực hiện tìm kiếm và sắp xếp cho các trường khác (name, price, sold)
+    const products = await Product.find(searchCondition).sort(sortOption);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error when searching products",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllProduct,
   getProductById,
   addProduct,
   updateProduct,
   deleteProduct,
+  searchProduct,
 };
