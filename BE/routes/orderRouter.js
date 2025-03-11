@@ -3,15 +3,18 @@ const checkRole = require("../middlewares/authMiddleware");
 const orderController = require("../Controller/orderController.js");
 const orderRouter = express.Router();
 
+const manager = require("../constant/constant").manager;
+const staff = require("../constant/constant").staff;
+
 orderRouter
   .route("/")
-  .get(checkRole("Customer"), orderController.getAllOrder)
-  .post(checkRole("Customer"), orderController.addOrder);
+  .get(checkRole(manager, staff), orderController.getAllOrder)
+  .post(checkRole(manager, staff), orderController.addOrder);
 
 orderRouter
   .route("/:id")
-  .get(checkRole("Customer"), orderController.getOrderByID)
-  .put(checkRole("Customer"), orderController.updateOrderByID)
-  .delete(checkRole("Customer"), orderController.deleteOrder);
+  .get(checkRole(manager, staff), orderController.getOrderByID)
+  .put(checkRole(manager, staff), orderController.updateOrderByID)
+  .delete(checkRole(manager, staff), orderController.deleteOrder)
 
 module.exports = orderRouter;

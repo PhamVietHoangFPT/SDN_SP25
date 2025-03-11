@@ -72,34 +72,54 @@ const updateOrderByID = async (req, res) => {
     const { id } = req.params;
     const { status, products } = req.body;
 
+    // 🔹 Kiểm tra Order có tồn tại không
     const updatedOrder = await Order.findById(id);
     if (!updatedOrder) {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    if (status) updatedOrder.status = status;
+    // 🔹 Cập nhật Status nếu có
+    if (status) {
+      const validStatuses = [
+        "Processing",
+        "Pending",
+        "Shipped",
+        "Delivered",
+        "Cancelled",
+      ];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ error: "Invalid status value" });
+      }
+      updatedOrder.status = status;
+    }
+
+    // 🔹 Cập nhật Products nếu có
     if (products && Array.isArray(products)) {
       updatedOrder.products = products.map((p) => ({
         product: new mongoose.Types.ObjectId(p.product),
         quantity: p.quantity,
       }));
+
+      // 🔹 Tính lại tổng tiền Order
       updatedOrder.total = products.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
       );
     }
 
+    // 🔹 Lưu lại Order đã cập nhật
     await updatedOrder.save();
+
     res
       .status(200)
       .json({ message: "Order updated successfully", order: updatedOrder });
   } catch (error) {
+    console.error("Error updating order:", error);
     res
       .status(500)
       .json({ error: "Error updating order", details: error.message });
   }
 };
-
 const deleteOrder = async (req, res) => {
   try {
     const { id } = req.params;

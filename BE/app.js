@@ -16,11 +16,11 @@ const accountRouter = require("./routes/accountRouter");
 const productRouter = require("./routes/productRouter");
 const productReviewRouter = require("./routes/productReviewRouter");
 const authRouter = require("./routes/authRouter");
-
 const articleRoutes = require("./routes/articleRoutes");
-
 const orderRouter = require("./routes/orderRouter");
-
+const cartRoutes = require("./routes/cartRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 var app = express();
 const uri = process.env.MONGO_URI;
@@ -41,17 +41,17 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-// app.use('/characters', characterRouter);
 app.use("/accounts", accountRouter);
 app.use("/products", productRouter);
 app.use("/productReviews", productReviewRouter);
 app.use("/manage/products", manageProductRouter);
 app.use("/auth", authRouter);
-
 app.use("/articles", articleRoutes);
-
 app.use("/orders", orderRouter);
+app.use("/cart", cartRoutes);
+app.use("/payment", paymentRoutes);
 
+app.use("/booking", bookingRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -68,6 +68,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-
 
 module.exports = app;
