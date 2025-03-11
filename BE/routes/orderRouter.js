@@ -1,5 +1,5 @@
 const express = require("express");
-const { checkRole } = require("../middlewares/authMiddleware");
+const checkRole = require("../middlewares/authMiddleware");
 const orderController = require("../Controller/orderController.js");
 const orderRouter = express.Router();
 

@@ -1,5 +1,4 @@
 const express = require("express");
-const { checkRole } = require("../middlewares/authMiddleware");
 const manageProductController = require("../Controller/manageProductController");
 
 const manageProductRouter = express.Router();
@@ -12,7 +11,7 @@ manageProductRouter
   .route("/")
   .get(checkRole(manager), manageProductController.getAllProduct)
   .post(checkRole(manager), manageProductController.addProduct)
-  
+
 manageProductRouter
   .route("/:id")
   .get(checkRole(manager), manageProductController.getProductById)
