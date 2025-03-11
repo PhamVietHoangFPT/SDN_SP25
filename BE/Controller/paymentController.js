@@ -76,5 +76,62 @@ const payOrderWithVNPay = async (req, res) => {
     });
   }
 };
+const confirmVNPayPayment = async (req, res) => {
+  try {
+    const vnp_Params = req.query;
 
-module.exports = { payOrderWithVNPay };
+    // 🔹 Lấy Secure Hash từ VNPay và loại bỏ nó khỏi danh sách params
+    const secureHash = vnp_Params.vnp_SecureHash;
+    delete vnp_Params.vnp_SecureHash;
+
+    // 🔹 Sắp xếp tham số theo thứ tự từ điển
+    const sortedParams = Object.fromEntries(Object.entries(vnp_Params).sort());
+    const signData = qs.stringify(sortedParams, { encode: false });
+
+    // 🔹 Tạo chữ ký hash để xác minh tính toàn vẹn của dữ liệu
+    const hmac = crypto.createHmac("sha512", process.env.VNP_HASHSECRET);
+    const signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
+
+    // 🔹 Kiểm tra chữ ký hợp lệ không
+    if (secureHash !== signed) {
+      return res.status(400).json({ error: "Invalid VNPay signature" });
+    }
+
+    // 🔹 Kiểm tra trạng thái thanh toán thành công
+    if (vnp_Params.vnp_ResponseCode === "00") {
+      const orderId = vnp_Params.vnp_TxnRef; // Lấy orderId từ mã giao dịch
+
+      // 🔹 Kiểm tra Order hợp lệ
+      if (!mongoose.Types.ObjectId.isValid(orderId)) {
+        return res.status(400).json({ error: "Invalid order ID" });
+      }
+
+      // 🔹 Cập nhật trạng thái Order thành "Delivered"
+      const updatedOrder = await Order.findByIdAndUpdate(
+        orderId,
+        { status: "Delivered" },
+        { new: true }
+      );
+
+      if (!updatedOrder) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      return res.json({
+        message: "Payment successful",
+        order: updatedOrder,
+        vnp_Params,
+      });
+    } else {
+      return res.status(400).json({ error: "Payment failed", vnp_Params });
+    }
+  } catch (error) {
+    console.error("VNPay Confirmation Error:", error);
+    res.status(500).json({
+      error: "Error verifying VNPay payment",
+      details: error.message,
+    });
+  }
+};
+
+module.exports = { payOrderWithVNPay, confirmVNPayPayment };
