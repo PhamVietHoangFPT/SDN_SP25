@@ -1,26 +1,20 @@
 const express = require("express");
 const manageProductController = require("../Controller/manageProductController");
+
 const manageProductRouter = express.Router();
-const { checkRole } = require("../middlewares/authMiddleware");
+
+const checkRole = require("../middlewares/authMiddleware");
+const manager = require("../constant/constant").manager;
 
 manageProductRouter
-  .route("/", checkRole("Admin"))
-  .get(manageProductController.getAllProduct);
+  .route("/")
+  .get(manageProductController.getAllProduct)
+  .post(checkRole(manager), manageProductController.addProduct);
 
 manageProductRouter
-  .route("/:id", checkRole("Admin"))
-  .get(manageProductController.getProductById);
-
-manageProductRouter
-  .route("/", checkRole("Admin"))
-  .post(manageProductController.addProduct);
-
-manageProductRouter
-  .route("/:id", checkRole("Admin"))
-  .put(manageProductController.updateProduct);
-
-manageProductRouter
-  .route("/:id", checkRole("Admin"))
-  .delete(manageProductController.deleteProduct);
+  .route("/:id")
+  .get(checkRole(manager), manageProductController.getProductById)
+  .put(checkRole(manager), manageProductController.updateProduct)
+  .delete(checkRole(manager), manageProductController.deleteProduct);
 
 module.exports = manageProductRouter;

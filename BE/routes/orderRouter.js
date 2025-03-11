@@ -1,7 +1,20 @@
-const express = require('express')
-const orderController = require('../Controller/orderController.js')
-const orderController = express.Router()
+const express = require("express");
+const checkRole = require("../middlewares/authMiddleware");
+const orderController = require("../Controller/orderController.js");
+const orderRouter = express.Router();
 
-orderController.route('/')
-  .get(orderController.getAllOrder)
-  .post(orderController.addOrder)
+const manager = require("../constant/constant").manager;
+const staff = require("../constant/constant").staff;
+
+orderRouter
+  .route("/")
+  .get(checkRole(manager, staff), orderController.getAllOrder)
+  .post(checkRole(manager, staff), orderController.addOrder);
+
+orderRouter
+  .route("/:id")
+  .get(checkRole(manager, staff), orderController.getOrderByID)
+  .put(checkRole(manager, staff), orderController.updateOrderByID)
+  .delete(checkRole(manager, staff), orderController.deleteOrder)
+
+module.exports = orderRouter;
