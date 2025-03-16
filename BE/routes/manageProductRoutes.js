@@ -8,8 +8,8 @@ const manager = require("../constant/constant").manager;
 
 manageProductRouter
   .route("/")
-  .get(manageProductController.getAllProduct)
-  .post(checkRole(manager), manageProductController.addProduct);
+  .get(checkRole(manager), manageProductController.getAllProduct)
+  .post(checkRole(manager), manageProductController.addProduct)
 
 manageProductRouter
   .route("/:id")
