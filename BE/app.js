@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const cors = require('cors')
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -32,6 +33,12 @@ connect.then((db) => {
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
+
+app.use(cors({
+  origin: '*', // Cho phép tất cả origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Các phương thức HTTP được phép
+  allowedHeaders: ['Content-Type', 'Authorization'] // Các header được phép
+}))
 
 app.use(logger("dev"));
 app.use(express.json());

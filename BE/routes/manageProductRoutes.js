@@ -10,7 +10,7 @@ manageProductRouter
   .route("/")
   .get(checkRole(manager), manageProductController.getAllProduct)
   .post(checkRole(manager), manageProductController.addProduct)
-  
+
 manageProductRouter
   .route("/:id")
   .get(checkRole(manager), manageProductController.getProductById)
