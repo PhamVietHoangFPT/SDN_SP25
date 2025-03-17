@@ -1,0 +1,175 @@
+/* ArticleManagementSystem.css */
+
+/* Base Layout */
+.layout {
+  min-height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+  height: 100vh; /* Đảm bảo full height */
+  width: 100vw; /* Chiếm toàn bộ chiều rộng màn hình */
+  background: #f9fafb;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Ngăn tràn nội dung */
+}
+
+/* Content Area */
+.content {
+  padding: 24px;
+  height: 100%; /* Full height của layout */
+  width: 100%; /* Full width của layout */
+  max-width: none; /* Bỏ giới hạn chiều rộng */
+  overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
+}
+
+/* Typography */
+.title {
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+  margin-bottom: 24px;
+}
+
+.title-level-2 {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.title-level-4 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* Buttons */
+.ant-btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.ant-btn-primary {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.ant-btn-danger {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+.ant-btn-danger:hover,
+.ant-btn-danger:focus {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+/* Table Styling */
+.ant-table {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  height: 100%; /* Full height của container */
+  width: 100%; /* Full width */
+}
+
+.ant-table-wrapper {
+  height: calc(100vh - 150px); /* Trừ đi khoảng cách header và padding */
+  overflow: auto; /* Cho phép cuộn bảng */
+}
+
+.ant-table-thead > tr > th {
+  background: #f1f5f9;
+  color: #374151;
+  font-weight: 600;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #f9fafb;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Card for Form */
+.ant-card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  padding: 16px;
+  height: calc(100vh - 100px); /* Full height trừ padding */
+  width: 100%;
+  overflow-y: auto; /* Cuộn nếu nội dung dài */
+}
+
+/* Form Inputs */
+.ant-form-item-label > label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.ant-input,
+.ant-input-textarea {
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 100%; /* Full width cho input */
+}
+
+.ant-input:focus,
+.ant-input-textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Textarea */
+.ant-input-textarea textarea {
+  resize: vertical;
+  min-height: 120px;
+  width: 100%; /* Full width */
+}
+
+/* Space between elements */
+.ant-space > .ant-space-item {
+  margin-right: 12px !important;
+}
+
+/* Popconfirm */
+.ant-popconfirm .ant-btn {
+  margin-right: 8px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .content {
+    padding: 16px;
+  }
+
+  .title-level-2 {
+    font-size: 24px;
+  }
+
+  .ant-btn {
+    padding: 6px 12px;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+
+  .ant-card {
+    height: calc(100vh - 80px); /* Điều chỉnh cho mobile */
+  }
+}
+
+/* Custom Icon Styling */
+.lucide-icon {
+  vertical-align: middle;
+  margin-right: 4px;
+}

@@ -1,3 +1,4 @@
+import ArticlePage from '../components/Home/ArticlePage'
 import MainLayout from '../components/layout/MainLayout'
 import ArticleManagementSystem from '../components/Manager/ArticleManagementSystem'
 import Homepage from '../Pages/Home/Home'
@@ -16,6 +17,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/login',
         component: Login,
+      },
+      {
+        path: '/article',
+        component: ArticlePage,
       },
     ],
   },
