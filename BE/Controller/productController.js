@@ -4,11 +4,13 @@ const getAllProduct = async (req, res) => {
   const searchValue = req.query;
   const pageNumber = parseInt(searchValue.pageNumber) || 1;
   const pageSize = parseInt(searchValue.pageSize) || 12;
+  const category = searchValue.category || "";
   const sort = searchValue.sort || "";
   const name = searchValue.name || "";
   // Xây dựng bộ lọc
   const filter = {};
   if (name) filter.name = { $regex: name, $options: "i" }; // Tìm kiếm theo tên không phân biệt hoa thường
+  if (category) filter.category = category; // Lọc theo danh mục
 
   // Xây dựng sắp xếp
   const sortOptions = {};

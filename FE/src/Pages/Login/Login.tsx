@@ -12,14 +12,10 @@ export default function Login() {
   const validationSchema = Yup.object({
     username: Yup.string().required('Vui lòng nhập tên đăng nhập'),
     password: Yup.string().required('Vui lòng nhập mật khẩu'),
-    retypePassword: Yup.string()
-      .oneOf([Yup.ref('password')], 'Mật khẩu nhập lại không khớp')
-      .required('Vui lòng nhập lại mật khẩu'),
   })
   const initialValues = {
     username: '',
     password: '',
-    retypePassword: '',
   }
   const handleSubmit = async (values: any) => {
     const { username, password } = values
@@ -87,20 +83,6 @@ export default function Login() {
                     as={Input.Password}
                     name='password'
                     placeholder='Mật khẩu'
-                  />
-                </Form.Item>
-                <Form.Item
-                  help={touched.retypePassword && errors.retypePassword}
-                  validateStatus={
-                    touched.retypePassword && errors.retypePassword
-                      ? 'error'
-                      : ''
-                  }
-                >
-                  <Field
-                    as={Input.Password}
-                    name='retypePassword'
-                    placeholder='Nhập lại mật khẩu'
                   />
                 </Form.Item>
                 <Form.Item>
