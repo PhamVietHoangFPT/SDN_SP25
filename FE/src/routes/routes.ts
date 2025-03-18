@@ -8,6 +8,8 @@ import Register from '../Pages/Register/Register'
 import ShowAllProductsManager from '../Pages/Products/ShowAllProductsCustomer'
 import { LayoutRoute } from '../types/routes'
 import ProductsDetailCustomer from '../Pages/Products/ProductsDetailCustomer'
+import ManagerLayout from '../components/layout/StaffLayout'
+import ManagerHome from '../Pages/Manager/ManagerHome'
 
 const routes: LayoutRoute[] = [
   {
@@ -32,7 +34,17 @@ const routes: LayoutRoute[] = [
       },
     ],
   },
-
+  {
+    layout: ManagerLayout,
+    data: [
+      {
+        path: '/manager/',
+        component: ManagerHome,
+        exact: true,
+        role: ['Manager'],
+      },
+    ],
+  },
   // ManagerManager
   {
     layout: MainLayout,
