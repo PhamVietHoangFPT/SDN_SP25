@@ -9,6 +9,9 @@ import ShowAllProductsManager from '../Pages/Products/ShowAllProductsCustomer'
 import { LayoutRoute } from '../types/routes'
 import ProductsDetailCustomer from '../Pages/Products/ProductsDetailCustomer'
 import CartDetails from '../Pages/Cart/CartDetails'
+import ManagerLayout from '../components/layout/StaffLayout'
+import ManagerHome from '../Pages/Manager/ManagerHome'
+import ManageCategory from '../Pages/Manager/Manager.category'
 
 const routes: LayoutRoute[] = [
   {
@@ -37,7 +40,22 @@ const routes: LayoutRoute[] = [
       },
     ],
   },
-
+  {
+    layout: ManagerLayout,
+    data: [
+      {
+        path: '/manager/',
+        component: ManagerHome,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/category',
+        component: ManageCategory,
+        role: ['Manager'],
+      },
+    ],
+  },
   // ManagerManager
   {
     layout: MainLayout,

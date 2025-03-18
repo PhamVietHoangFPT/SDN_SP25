@@ -75,6 +75,7 @@ const getCategoryById = async (req, res) => {
         res.status(500).json({ message: "Server error when retrieving products" });
     }
 };
+
 const updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
