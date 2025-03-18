@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const productSchema = new Schema(
   {
-    
+
     name: {
       type: String,
       required: true,
@@ -27,6 +27,10 @@ const productSchema = new Schema(
     sold: {
       type: Number,
       default: 0,
+    },
+    images: {
+      type: String,
+      required: true,
     },
   },
   {

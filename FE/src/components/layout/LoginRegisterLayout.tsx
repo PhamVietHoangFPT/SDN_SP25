@@ -1,10 +1,9 @@
 import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
-import Navbar from './Navbar/Navbar'
-import AppHeader from './Header/Header'
+
 const { Content } = Layout
 
-function MainLayout() {
+function LoginRegisterLayout() {
   return (
     <Layout
       style={{
@@ -12,8 +11,6 @@ function MainLayout() {
         overflow: 'hidden',
       }}
     >
-      <AppHeader />
-      <Navbar />
       <Content
         style={{
           margin: '24px',
@@ -27,4 +24,4 @@ function MainLayout() {
   )
 }
 
-export default MainLayout
+export default LoginRegisterLayout

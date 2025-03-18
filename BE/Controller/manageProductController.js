@@ -26,8 +26,8 @@ const getProductById = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const { name, price, description, category, stock, sold } = req.body;
-    if (!name || !price || !category || !stock) {
+    const { name, price, description, category, stock, sold, images } = req.body;
+    if (!name || !price || !category || !stock || !images) {
       return res
         .status(400)
         .json({ message: "Please enter complete information!" });
@@ -39,6 +39,7 @@ const addProduct = async (req, res) => {
       description,
       category,
       stock,
+      images: images,
       sold: sold || 0,
     });
     const savedProduct = await newProduct.save();

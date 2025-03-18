@@ -4,20 +4,27 @@ const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
-    const { username, password, dateOfBirth, email, phoneNumber, gender } =
+    const { username, password, dateOfBirth, email, phoneNumber, gender, address } =
       req.body;
 
-    if (!username || !password || !dateOfBirth || !email || !phoneNumber) {
+    if (!username || !password || !dateOfBirth || !email || !phoneNumber || !address) {
       return res.status(400).json({ message: "Please fill all fields" });
     }
-    const user = await Account.findOne({
-      $or: [{ email: email }, { phoneNumber: phoneNumber }],
-    });
-    if (user) {
-      return res
-        .status(400)
-        .json({ message: "Email or phone number is used!" });
+    const existingEmail = await Account.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ message: "Email is already used!" });
     }
+
+    const existingPhone = await Account.findOne({ phoneNumber });
+    if (existingPhone) {
+      return res.status(400).json({ message: "Phone number is already used!" });
+    }
+
+    const existingUsername = await Account.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username is already taken!" });
+    }
+
     const newUser = new Account({
       username: username,
       password: password,
@@ -26,6 +33,7 @@ const register = async (req, res) => {
       email: email,
       phoneNumber: phoneNumber,
       gender: gender,
+      address: address,
     });
     newUser.save().then((newUser) => {
       res.status(200).json(newUser);

@@ -1,43 +1,55 @@
 import { apiSlice } from '../../apis/apiSlice'
 import { login, logout } from './authSlice'
-
-export const authApi = apiSlice.injectEndpoints({
+export const authAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
-      { accessToken: string },
-      { email: string; password: string }
+      { token: string },
+      { username: string; password: string }
     >({
       query: (credentials) => ({
         url: '/auth/login',
         method: 'POST',
         body: credentials,
-        credentials: 'include', // Quan trọng: Gửi cookies khi đăng nhập
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          dispatch(login(data))
+          dispatch(login({ token: data.token }))
         } catch (error) {
-          console.error('Login failed', error)
+          console.log(error)
         }
       },
     }),
     logout: builder.mutation<void, void>({
-      query: () => ({
-        url: '/auth/logout',
-        method: 'POST',
-        credentials: 'include',
-      }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      queryFn: async () => ({ data: undefined }),
+      async onQueryStarted(_, { dispatch }) {
         try {
-          await queryFulfilled
           dispatch(logout())
         } catch (error) {
-          console.error('Logout failed', error)
+          console.log(error)
         }
       },
+    }),
+    register: builder.mutation<
+      void,
+      {
+        email: string
+        password: string
+        address: string
+        gender: boolean
+        dateOfBirth: string
+        username: string
+        phoneNumber: string
+      }
+    >({
+      query: (credentials) => ({
+        url: '/auth/register',
+        method: 'POST',
+        body: credentials,
+      }),
     }),
   }),
 })
 
-export const { useLoginMutation } = authApi
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
+  authAPI
