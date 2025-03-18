@@ -2,11 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react'
 import {
   MailOutlined,
   LogoutOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  FormOutlined,
-  CalendarOutlined,
-  SearchOutlined,
   TeamOutlined,
   SmileOutlined,
   UserAddOutlined,
