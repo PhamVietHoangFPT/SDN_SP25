@@ -33,11 +33,30 @@ export const categoryApi = apiSlice.injectEndpoints({
             transformResponse: (res) => res,
             invalidatesTags: ['category'],
         }),
+        deleteCategory: build.mutation({
+            query: (id) => ({
+                url: `/category/${id}`,
+                method: 'DELETE',
+            }),
+            transformResponse: (res) => res,
+            invalidatesTags: ['category'], // Invalidate the 'category' tag to refetch related data
+        }),
+        addCategory: build.mutation({
+            query: (data) => ({
+                url: '/category',
+                method: 'POST',
+                body: data,
+            }),
+            transformResponse: (res) => res,
+            invalidatesTags: ['category'], // Invalidate the 'category' tag to refetch the list
+        }),
     }),
 })
 
 export const {
     useGetCategoryListQuery,
     useUpdateCategoryMutation,
-    useGetCategoryDetailQuery
+    useGetCategoryDetailQuery,
+    useDeleteCategoryMutation,
+    useAddCategoryMutation
 } = categoryApi
