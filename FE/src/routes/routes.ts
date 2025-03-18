@@ -1,8 +1,12 @@
+import LoginRegisterLayout from '../components/layout/LoginRegisterLayout'
 import MainLayout from '../components/layout/MainLayout'
 import ArticleManagementSystem from '../components/Manager/ArticleManagementSystem'
 import Homepage from '../Pages/Home/Home'
 import Login from '../Pages/Login/Login'
+import Register from '../Pages/Register/Register'
+import ShowAllProductsManager from '../Pages/Products/ShowAllProductsCustomer'
 import { LayoutRoute } from '../types/routes'
+import ProductsDetailCustomer from '../Pages/Products/ProductsDetailCustomer'
 
 const routes: LayoutRoute[] = [
   {
@@ -14,8 +18,12 @@ const routes: LayoutRoute[] = [
         exact: true,
       },
       {
-        path: '/login',
-        component: Login,
+        path: '/products',
+        component: ShowAllProductsManager,
+      },
+      {
+        path: '/products/:id',
+        component: ProductsDetailCustomer,
       },
     ],
   },
@@ -27,6 +35,19 @@ const routes: LayoutRoute[] = [
       {
         path: '/managerArticles',
         component: ArticleManagementSystem,
+      },
+    ],
+  },
+  {
+    layout: LoginRegisterLayout,
+    data: [
+      {
+        path: '/login',
+        component: Login,
+      },
+      {
+        path: '/register',
+        component: Register,
       },
     ],
   },
