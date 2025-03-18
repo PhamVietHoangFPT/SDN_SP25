@@ -1,5 +1,5 @@
 const Product = require("../Models/Product");
-
+const mongoose = require("mongoose");
 const getAllProduct = async (req, res) => {
   try {
     const products = await Product.find({});
@@ -40,7 +40,7 @@ const addProduct = async (req, res) => {
       name,
       price,
       description,
-      category: mongoose.Types.ObjectId(category),
+      category: new mongoose.Types.ObjectId(category),
       stock,
       images: images,
       sold: sold || 0,
@@ -63,7 +63,7 @@ const updateProduct = async (req, res) => {
     }
 
     if (category) {
-      updateData.category = mongoose.Types.ObjectId(category);
+      updateData.category = new mongoose.Types.ObjectId(category);
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
