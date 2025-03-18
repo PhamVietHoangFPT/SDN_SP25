@@ -55,7 +55,7 @@ const SideBarStaff: React.FC = () => {
         key: 'sub3',
         label: 'Account',
         icon: <TeamOutlined />,
-        url: "manager/account"
+        url: 'manager/account',
       },
       {
         key: 'sub10',
@@ -67,13 +67,13 @@ const SideBarStaff: React.FC = () => {
         key: 'sub1',
         label: 'Product',
         icon: <MailOutlined />,
-        url: '/manager/product'
+        url: '/managerProduct',
       },
       {
         key: 'sub2',
         label: 'Articles',
         icon: <TeamOutlined />,
-        url: "manager/articles"
+        url: 'managerArticles',
       },
       {
         key: 'sub5',
