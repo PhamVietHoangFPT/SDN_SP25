@@ -1,4 +1,5 @@
 import LoginRegisterLayout from '../components/layout/LoginRegisterLayout'
+import ArticlePage from '../components/Home/ArticlePage'
 import MainLayout from '../components/layout/MainLayout'
 import ArticleManagementSystem from '../components/Manager/ArticleManagementSystem'
 import Homepage from '../Pages/Home/Home'
@@ -24,6 +25,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/products/:id',
         component: ProductsDetailCustomer,
+      },
+      {
+        path: '/article',
+        component: ArticlePage,
       },
     ],
   },

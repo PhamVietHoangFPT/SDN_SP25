@@ -1,18 +1,15 @@
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Layout,
   Typography,
   message,
   Button,
   Table,
-  Tag,
   Space,
   Popconfirm,
   Form,
   Input,
   Card,
-  Select,
   Row,
   Col,
 } from 'antd'
@@ -29,20 +26,20 @@ import {
   useUpdateArticleMutation,
   useDeleteArticleMutation,
 } from '../../features/articles/articles'
+import './ArticleManagement.css' // Thêm dòng này
 
 const { Content } = Layout
 const { Title } = Typography
 const { TextArea } = Input
-const { Option } = Select
 
 export interface Article {
-  id: string
+  _id: string
   title: string
   content: string
-  author: string
-  publishDate: Date
-  imageUrl: string
-  tags: string[]
+  category: string
+  image: string
+  createdAt: string
+  __v?: number
 }
 
 export default function ArticleManagementSystem() {
@@ -50,7 +47,6 @@ export default function ArticleManagementSystem() {
   const [isFormVisible, setIsFormVisible] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
 
-  // Gọi API để lấy danh sách articles
   const { data: articles = [], isLoading } = useGetArticlesQuery({})
   const [addArticle] = useAddArticleMutation()
   const [updateArticle] = useUpdateArticleMutation()
@@ -69,26 +65,24 @@ export default function ArticleManagementSystem() {
   const handleDeleteArticle = async (id: string) => {
     try {
       await deleteArticle(id).unwrap()
-      messageApi.success('Article deleted successfully')
+      messageApi.success('Bài viết đã được xóa thành công')
     } catch (error) {
-      messageApi.error('Failed to delete article')
+      messageApi.error('Xóa bài viết thất bại')
     }
   }
 
   const handleSaveArticle = async (article: Article) => {
     try {
       if (editingArticle) {
-        // Cập nhật article
-        await updateArticle({ id: article.id, ...article }).unwrap()
-        messageApi.success('Article updated successfully')
+        await updateArticle({ _id: article._id, ...article }).unwrap()
+        messageApi.success('Bài viết đã được cập nhật thành công')
       } else {
-        // Thêm article mới
         await addArticle(article).unwrap()
-        messageApi.success('Article added successfully')
+        messageApi.success('Bài viết đã được thêm thành công')
       }
       setIsFormVisible(false)
     } catch (error) {
-      messageApi.error('Failed to save article')
+      messageApi.error('Lưu bài viết thất bại')
     }
   }
 
@@ -97,11 +91,11 @@ export default function ArticleManagementSystem() {
   }
 
   return (
-    <Layout className='min-h-screen bg-white'>
+    <Layout className='layout'>
       {contextHolder}
-      <Content className='p-4 md:p-6'>
-        <Title level={2} className='mb-6'>
-          Article Management
+      <Content className='content'>
+        <Title level={2} className='title title-level-2'>
+          Quản lý bài viết
         </Title>
 
         {isFormVisible ? (
@@ -127,7 +121,7 @@ export default function ArticleManagementSystem() {
 function ArticleList({ articles, onAdd, onEdit, onDelete, isLoading }) {
   const columns = [
     {
-      title: 'Title',
+      title: 'Tiêu đề',
       dataIndex: 'title',
       key: 'title',
       render: (text: string, record: Article) => (
@@ -135,50 +129,36 @@ function ArticleList({ articles, onAdd, onEdit, onDelete, isLoading }) {
       ),
     },
     {
-      title: 'Author',
-      dataIndex: 'author',
-      key: 'author',
+      title: 'Danh mục',
+      dataIndex: 'category',
+      key: 'category',
     },
     {
-      title: 'Publish Date',
+      title: 'Ngày đăng',
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (tags: string[]) => (
-        <>
-          {tags.map((tag) => (
-            <Tag color='blue' key={tag}>
-              {tag}
-            </Tag>
-          ))}
-        </>
-      ),
-    },
-    {
-      title: 'Actions',
+      title: 'Hành động',
       key: 'action',
       render: (_, record: Article) => (
         <Space size='middle'>
           <Button
-            icon={<EditOutlined className='h-4 w-4' />}
+            icon={<EditOutlined className='lucide-icon' />}
             onClick={() => onEdit(record)}
           >
-            Edit
+            Sửa
           </Button>
           <Popconfirm
-            title='Delete this article?'
-            description='This action cannot be undone.'
-            onConfirm={() => onDelete(record.id)}
-            okText='Yes'
-            cancelText='No'
+            title='Xóa bài viết này?'
+            description='Hành động này không thể hoàn tác.'
+            onConfirm={() => onDelete(record._id)}
+            okText='Có'
+            cancelText='Không'
           >
-            <Button danger icon={<DeleteOutlined className='h-4 w-4' />}>
-              Delete
+            <Button danger icon={<DeleteOutlined className='lucide-icon' />}>
+              Xóa
             </Button>
           </Popconfirm>
         </Space>
@@ -186,29 +166,34 @@ function ArticleList({ articles, onAdd, onEdit, onDelete, isLoading }) {
     },
   ]
 
+  const dataSource = (articles || []).map((article) => ({
+    ...article,
+    key: article._id,
+  }))
+
   return (
     <div>
       <Row className='mb-4' justify='space-between' align='middle'>
         <Col>
-          <Title level={4}>Articles ({articles.length})</Title>
+          <Title level={4} className='title title-level-4'>
+            Bài viết ({(articles || []).length})
+          </Title>
         </Col>
         <Col>
           <Button
             type='primary'
-            icon={<PlusOutlined className='h-4 w-4' />}
+            icon={<PlusOutlined className='lucide-icon' />}
             onClick={onAdd}
+            style={{ marginLeft: '30px' }}
           >
-            Add Article
+            Thêm bài viết
           </Button>
         </Col>
       </Row>
 
       <Table
         columns={columns}
-        dataSource={articles.map((article) => ({
-          ...article,
-          key: article.id,
-        }))}
+        dataSource={dataSource}
         loading={isLoading}
         pagination={{ pageSize: 10 }}
         scroll={{ x: 'max-content' }}
@@ -219,7 +204,6 @@ function ArticleList({ articles, onAdd, onEdit, onDelete, isLoading }) {
 
 function ArticleForm({ article, onSave, onCancel }) {
   const [form] = Form.useForm()
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   const isEditing = !!article
 
@@ -227,51 +211,35 @@ function ArticleForm({ article, onSave, onCancel }) {
     if (article) {
       form.setFieldsValue({
         ...article,
-        tags: article.tags,
       })
-      setSelectedTags(article.tags)
     }
   }, [article, form])
 
   const handleFinish = (values) => {
     const savedArticle: Article = {
-      id: article?.id || '',
+      _id: article?._id || '',
       title: values.title,
       content: values.content,
-      author: values.author,
-      publishDate: article?.publishDate || new Date(),
-      imageUrl: values.imageUrl || '',
-      tags: values.tags,
+      category: values.category,
+      image: values.image || '',
+      createdAt: article?.createdAt || new Date().toISOString(),
     }
     onSave(savedArticle)
   }
 
-  const tagOptions = [
-    'React',
-    'JavaScript',
-    'TypeScript',
-    'Next.js',
-    'Ant Design',
-    'UI',
-    'UX',
-    'Frontend',
-    'Backend',
-    'Design System',
-    'CSS',
-    'HTML',
-    'Web Development',
-  ]
-
   return (
-    <Card>
+    <Card className='ant-card'>
       <Row className='mb-4' align='middle'>
         <Col span={24}>
           <Space>
-            <Button icon={<ArrowLeft className='h-4 w-4' />} onClick={onCancel}>
-              Back
+            <Button
+              icon={<ArrowLeft className='lucide-icon' />}
+              onClick={onCancel}
+            >
+              Quay lại
             </Button>
-            <Title level={4} className='m-0'>
-              {isEditing ? 'Edit Article' : 'Add New Article'}
+            <Title level={4} className='title title-level-4 m-0'>
+              {isEditing ? 'Sửa bài viết' : 'Thêm bài viết mới'}
             </Title>
           </Space>
         </Col>
@@ -284,57 +252,40 @@ function ArticleForm({ article, onSave, onCancel }) {
         initialValues={{
           title: '',
           content: '',
-          author: '',
-          imageUrl: '',
-          tags: [],
+          category: '',
+          image: '',
         }}
       >
         <Form.Item
           name='title'
-          label='Title'
+          label='Tiêu đề'
           rules={[
-            { required: true, message: 'Please enter the article title' },
+            { required: true, message: 'Vui lòng nhập tiêu đề bài viết' },
           ]}
         >
-          <Input placeholder='Enter article title' />
+          <Input placeholder='Nhập tiêu đề bài viết' />
         </Form.Item>
 
         <Form.Item
-          name='author'
-          label='Author'
-          rules={[{ required: true, message: 'Please enter the author name' }]}
+          name='category'
+          label='Danh mục'
+          rules={[{ required: true, message: 'Vui lòng nhập danh mục' }]}
         >
-          <Input placeholder='Enter author name' />
+          <Input placeholder='Nhập danh mục' />
         </Form.Item>
 
-        <Form.Item name='imageUrl' label='Image URL'>
-          <Input placeholder='Enter image URL or leave empty' />
+        <Form.Item name='image' label='URL hình ảnh'>
+          <Input placeholder='Nhập URL hình ảnh hoặc để trống' />
         </Form.Item>
 
         <Form.Item
           name='content'
-          label='Content'
+          label='Nội dung'
           rules={[
-            { required: true, message: 'Please enter the article content' },
+            { required: true, message: 'Vui lòng nhập nội dung bài viết' },
           ]}
         >
-          <TextArea rows={6} placeholder='Enter article content' />
-        </Form.Item>
-
-        <Form.Item name='tags' label='Tags'>
-          <Select
-            mode='multiple'
-            placeholder='Select tags'
-            style={{ width: '100%' }}
-            onChange={setSelectedTags}
-            value={selectedTags}
-          >
-            {tagOptions.map((tag) => (
-              <Option key={tag} value={tag}>
-                {tag}
-              </Option>
-            ))}
-          </Select>
+          <TextArea rows={6} placeholder='Nhập nội dung bài viết' />
         </Form.Item>
 
         <Form.Item>
@@ -342,11 +293,11 @@ function ArticleForm({ article, onSave, onCancel }) {
             <Button
               type='primary'
               htmlType='submit'
-              icon={<Save className='h-4 w-4' />}
+              icon={<Save className='lucide-icon' />}
             >
-              Save Article
+              Lưu bài viết
             </Button>
-            <Button onClick={onCancel}>Cancel</Button>
+            <Button onClick={onCancel}>Hủy</Button>
           </Space>
         </Form.Item>
       </Form>
