@@ -20,7 +20,7 @@ const getAllProduct = async (req, res) => {
   else if (sort === "nameDesc") sortOptions.name = -1; // Tên Z-A
   else if (sort === "soldDesc") sortOptions.sold = -1; // Bán chạy nhất
   try {
-    const products = await Product.find(filter)
+    const products = await Product.find(filter).populate("category")
       .sort(sortOptions)
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);

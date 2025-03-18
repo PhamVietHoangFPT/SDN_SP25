@@ -11,6 +11,8 @@ const checkRole = (requiredRole) => {
       const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
 
+      console.log(decoded.role, requiredRole);
+
       if (decoded.role !== requiredRole) {
         return res
           .status(403)
