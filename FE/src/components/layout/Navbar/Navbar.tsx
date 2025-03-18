@@ -9,11 +9,13 @@ import {
 } from '@ant-design/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyringe } from '@fortawesome/free-solid-svg-icons'
-import type { MenuProps } from 'antd'
 import { Menu, Layout } from 'antd'
-const { Header } = Layout
+import type { MenuProps } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import Logo from '../../../assets/Logo.png'
+
+const { Header } = Layout
 
 const Navbar: React.FC = () => {
   const location = useLocation()
@@ -31,15 +33,9 @@ const Navbar: React.FC = () => {
     : null
   const navigate = useNavigate()
 
-  // ✅ Thêm menu con trong `items`
   const items = useMemo(() => {
     return [
-      {
-        key: 'home',
-        icon: <HomeOutlined />,
-        label: 'Trang chủ',
-        url: '/',
-      },
+      { key: 'home', icon: <HomeOutlined />, label: 'Trang chủ', url: '/' },
       {
         key: 'products',
         icon: <FontAwesomeIcon icon={faSyringe} />,
@@ -57,16 +53,8 @@ const Navbar: React.FC = () => {
         icon: <InfoCircleOutlined />,
         label: 'Về chúng tôi',
         children: [
-          {
-            key: 'about1',
-            label: 'About us 1',
-            url: '/abouts/abouts2',
-          },
-          {
-            key: 'service2',
-            label: 'About us 2',
-            url: '/abouts/abouts2',
-          },
+          { key: 'about1', label: 'About us 1', url: '/abouts/abouts1' },
+          { key: 'about2', label: 'About us 2', url: '/abouts/abouts2' },
         ],
       },
       {
@@ -98,7 +86,16 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <Header style={{ background: '#fff' }}>
+    <Header
+      style={{
+        background: '#fff',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        width: '100%',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+      }}
+    >
       <Menu
         onClick={onClick}
         selectedKeys={[current]}
@@ -109,6 +106,26 @@ const Navbar: React.FC = () => {
           borderBottom: '1px solid #f0f0f0',
         }}
       >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            fontSize: '20px',
+            fontWeight: 'bold',
+            height: '30px',
+            margin: 20,
+          }}
+        >
+          <img
+            src={Logo}
+            alt='Logo'
+            style={{
+              width: '50px',
+              borderRadius: '50%',
+            }}
+          />
+        </div>
         {items.map((item) =>
           item.children ? (
             <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
