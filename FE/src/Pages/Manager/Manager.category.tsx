@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import { Category } from '../../types/category'
-import { useGetCategoryListQuery } from '../../features/cateogory/categoryAPI'
-import { useSearchParams } from 'react-router-dom'
-import { DeleteOutlined, EditOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Table } from 'antd'
+import React, { useEffect, useState } from 'react';
+import { Category } from '../../types/category';
+import { useGetCategoryListQuery } from '../../features/cateogory/categoryAPI';
+import { useSearchParams } from 'react-router-dom';
+import { DeleteOutlined, EditOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Table } from 'antd';
+import UpdateCategoryModal from '../../components/modal/updateCategoryModal';
+
 interface CategoryListResponse {
     data: {
-        categories: Category[]
-        totalItems: number
-    }
-    error: any
-    isLoading: boolean
-    isFetching: boolean
+        categories: Category[];
+        totalItems: number;
+    };
+    error: any;
+    isLoading: boolean;
+    isFetching: boolean;
 }
 
 const ManageCategory: React.FC = () => {
-    const [searchParams, setSearchParams] = useSearchParams()
-    // Pagination and search states
-    const initialPage = parseInt(searchParams.get('page') || '1', 10)
-    const initialSearch = searchParams.get('name') || ''
-    const [currentPage, setCurrentPage] = useState(initialPage)
-    const [searchTerm, setSearchTerm] = useState(initialSearch)
-
-
-    const pageSize = 7
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1', 10));
+    const [searchTerm, setSearchTerm] = useState(searchParams.get('name') || '');
+    // Modal state
+    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
+    const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
+    const pageSize = 7;
     const {
         data: categories,
         isLoading: categoryLoading,
@@ -31,18 +31,18 @@ const ManageCategory: React.FC = () => {
     } = useGetCategoryListQuery<CategoryListResponse>({
         pageNumber: currentPage,
         pageSize: pageSize,
-        name: searchTerm
-    })
+        name: searchTerm,
+    });
 
-    const dateCategory = categories?.categories ?? []
-    const totalCategory = categories?.totalItems ?? 0
-    // Update URL search params
+    const dateCategory = categories?.categories ?? [];
+    const totalCategory = categories?.totalItems ?? 0;
+
     useEffect(() => {
         setSearchParams({
             page: currentPage.toString(),
             name: searchTerm,
-        })
-    }, [currentPage, searchTerm, setSearchParams])
+        });
+    }, [currentPage, searchTerm, setSearchParams]);
 
     if (categoryLoading) {
         return (
@@ -55,10 +55,9 @@ const ManageCategory: React.FC = () => {
                     height: '30vh',
                 }}
             />
-        )
+        );
     }
 
-    // Table columns
     const columns = [
         {
             title: 'No.',
@@ -75,27 +74,34 @@ const ManageCategory: React.FC = () => {
         {
             title: 'Update',
             key: 'update',
-            render: (_: any) => (
+            render: (_: any, record: Category) => (
                 <Button
-                    type='primary'
+                    type="primary"
                     icon={<EditOutlined />}
+                    onClick={() => {
+                        setSelectedChildId(record._id) // Set the selected customer ID
+                        setIsDetailModalVisible(true) // Show the modal
+                    }}
                 />
             ),
         },
         {
             title: 'Delete',
             key: 'delete',
-            render: (_: any,) => (
+            render: (_: any) => (
                 <Button
-                    color='primary'
+                    color="primary"
                     danger
                     icon={<DeleteOutlined />}
                 />
             ),
         },
-    ]
-
-
+    ];
+    // Handle modal close
+    const handleDetailModalClose = () => {
+        setIsDetailModalVisible(false)
+        setSelectedChildId(null)
+    }
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
             <div style={{ marginBottom: 16 }}>
@@ -112,7 +118,7 @@ const ManageCategory: React.FC = () => {
                 columns={columns}
                 dataSource={dateCategory.map((item, index) => ({
                     ...item,
-                    key: item.id,
+                    key: item._id,
                     index: (currentPage - 1) * pageSize + index + 1,
                     children: undefined,
                 }))}
@@ -123,11 +129,17 @@ const ManageCategory: React.FC = () => {
                     pageSize: pageSize,
                     total: totalCategory,
                     onChange: (page) => {
-                        setCurrentPage(page)
+                        setCurrentPage(page);
                     },
                 }}
             />
+            <UpdateCategoryModal
+                visible={isDetailModalVisible}
+                id={selectedChildId}
+                onClose={handleDetailModalClose}
+            />
         </div>
-    )
-}
+    );
+};
+
 export default ManageCategory;
