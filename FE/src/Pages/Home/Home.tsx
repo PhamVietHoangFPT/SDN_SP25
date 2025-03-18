@@ -37,7 +37,7 @@ const Homepage: React.FC = () => {
             >
               Popular Products
             </Title>
-            <ProductSlider />
+            {/* <ProductSlider /> */}
           </div>
         </div>
       </Content>
