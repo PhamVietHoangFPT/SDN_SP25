@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Category } from '../../types/category';
-import { useGetCategoryListQuery } from '../../features/cateogory/categoryAPI';
+import { useDeleteCategoryMutation, useGetCategoryListQuery } from '../../features/cateogory/categoryAPI';
 import { useSearchParams } from 'react-router-dom';
-import { DeleteOutlined, EditOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Table } from 'antd';
+import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, message, Table } from 'antd';
 import UpdateCategoryModal from '../../components/modal/updateCategoryModal';
+import AddCategoryModal from '../../components/modal/addCategoryModal';
 
 interface CategoryListResponse {
     data: {
@@ -22,6 +23,7 @@ const ManageCategory: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState(searchParams.get('name') || '');
     // Modal state
     const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
+    const [isAddModalVisible, setIsAddModalVisible] = useState(false); // State for add modal
     const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
     const pageSize = 7;
     const {
@@ -36,7 +38,17 @@ const ManageCategory: React.FC = () => {
 
     const dateCategory = categories?.categories ?? [];
     const totalCategory = categories?.totalItems ?? 0;
+    const [deleteCategory, { isLoading: isDeleting }] = useDeleteCategoryMutation();
 
+    const handleDelete = async (_id: string) => {
+        try {
+            await deleteCategory(_id).unwrap();
+            message.success('Category deleted successfully!');
+        } catch (error:any) {
+            console.error('Delete error:', error);
+            message.error(error.data?.message || 'Không thể cập nhật thông tin')
+        }
+    };
     useEffect(() => {
         setSearchParams({
             page: currentPage.toString(),
@@ -88,11 +100,12 @@ const ManageCategory: React.FC = () => {
         {
             title: 'Delete',
             key: 'delete',
-            render: (_: any) => (
+            render: (_: any, record: Category) => (
                 <Button
-                    color="primary"
                     danger
                     icon={<DeleteOutlined />}
+                    onClick={() => handleDelete(record._id)}
+                    loading={isDeleting}
                 />
             ),
         },
@@ -113,6 +126,13 @@ const ManageCategory: React.FC = () => {
                     prefix={<SearchOutlined />}
                     allowClear
                 />
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => setIsAddModalVisible(true)}
+                >
+                    Add Category
+                </Button>
             </div>
             <Table
                 columns={columns}
@@ -137,6 +157,10 @@ const ManageCategory: React.FC = () => {
                 visible={isDetailModalVisible}
                 id={selectedChildId}
                 onClose={handleDetailModalClose}
+            />
+            <AddCategoryModal
+                visible={isAddModalVisible}
+                onClose={() => setIsAddModalVisible(false)}
             />
         </div>
     );
