@@ -24,6 +24,7 @@ const Homepage: React.FC = () => {
           <div
             style={{
               width: '70vw',
+              height: '200px',
             }}
           >
             <Title

@@ -38,16 +38,17 @@ export const ProductSlider = () => {
         { breakpoint: 1024, settings: { slidesToShow: 2 } }, // Tablet
         { breakpoint: 768, settings: { slidesToShow: 1 } }, // Mobile
       ]}
+      style={{ height: '200px' }}
     >
       {data.products.map((product) => (
-        <div key={product.id}>
+        <div key={product._id}>
           <Card
             hoverable
             style={{
+              width: '75%',
               borderRadius: '12px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
               margin: '8px',
-              minHeight: '400px', // Giữ chiều cao đồng đều
               display: 'flex',
               flexDirection: 'column',
             }}
