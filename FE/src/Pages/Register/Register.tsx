@@ -6,12 +6,15 @@ import {
   DatePicker,
   Select,
   notification,
+  Row,
+  Col,
 } from 'antd'
 import { Formik, Field, Form as FormikForm } from 'formik'
 import * as Yup from 'yup'
 import { useRegisterMutation } from '../../features/auth/authApi'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
+import OIG4 from '../../assets/OIG4.jpg'
 
 const { Content } = Layout
 const { Option } = Select
@@ -20,7 +23,6 @@ export default function Register() {
   const navigate = useNavigate()
   const [register, { isLoading }] = useRegisterMutation()
 
-  // Validation Schema with Yup
   const validationSchema = Yup.object({
     username: Yup.string().required('Please enter a username'),
     password: Yup.string()
@@ -40,7 +42,6 @@ export default function Register() {
     gender: Yup.boolean().required('Please select a gender'),
   })
 
-  // Default values
   const initialValues = {
     username: '',
     password: '',
@@ -49,7 +50,7 @@ export default function Register() {
     phone: '',
     address: '',
     birthday: '',
-    gender: true, // Default is Male (true)
+    gender: true,
   }
 
   const handleSubmit = async (values: any) => {
@@ -97,143 +98,210 @@ export default function Register() {
   }
 
   return (
-    <Layout>
-      <Content
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        <div style={{ width: 400 }}>
-          <h2>Register an account</h2>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
+    <Layout style={{ height: '100vh' }}>
+      <Content>
+        <Row style={{ height: '100%' }}>
+          {/* Cột bên trái: Banner (30%) */}
+          <Col
+            xs={0}
+            md={7}
+            style={{
+              backgroundImage: 'url(..)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: 'white',
+              textAlign: 'center',
+              flexDirection: 'column',
+              padding: '20px',
+            }}
           >
-            {({ errors, touched, setFieldValue }) => (
-              <FormikForm>
-                {/* Username */}
-                <Form.Item
-                  help={touched.username && errors.username}
-                  validateStatus={
-                    touched.username && errors.username ? 'error' : ''
-                  }
-                >
-                  <Field as={Input} name='username' placeholder='Username' />
-                </Form.Item>
+            <img src={OIG4} alt='OIG4' />
+          </Col>
 
-                {/* Email */}
-                <Form.Item
-                  help={touched.email && errors.email}
-                  validateStatus={touched.email && errors.email ? 'error' : ''}
-                >
-                  <Field as={Input} name='email' placeholder='Email' />
-                </Form.Item>
+          {/* Cột bên phải: Form đăng ký */}
+          <Col
+            xs={24}
+            md={17}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '20px',
+            }}
+          >
+            <div style={{ width: 400 }}>
+              <h2 style={{ textAlign: 'center', marginBottom: 20 }}>
+                Đăng ký tài khoản
+              </h2>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ errors, touched, setFieldValue }) => (
+                  <FormikForm>
+                    <Form.Item
+                      help={touched.username && errors.username}
+                      validateStatus={
+                        touched.username && errors.username ? 'error' : ''
+                      }
+                    >
+                      <Field
+                        as={Input}
+                        name='username'
+                        placeholder='Tên đăng nhập'
+                        size='large'
+                      />
+                    </Form.Item>
 
-                {/* Phone number */}
-                <Form.Item
-                  help={touched.phone && errors.phone}
-                  validateStatus={touched.phone && errors.phone ? 'error' : ''}
-                >
-                  <Field as={Input} name='phone' placeholder='Phone number' />
-                </Form.Item>
+                    <Form.Item
+                      help={touched.email && errors.email}
+                      validateStatus={
+                        touched.email && errors.email ? 'error' : ''
+                      }
+                    >
+                      <Field
+                        as={Input}
+                        name='email'
+                        placeholder='Email'
+                        size='large'
+                      />
+                    </Form.Item>
 
-                {/* Password */}
-                <Form.Item
-                  help={touched.password && errors.password}
-                  validateStatus={
-                    touched.password && errors.password ? 'error' : ''
-                  }
-                >
-                  <Field
-                    as={Input.Password}
-                    name='password'
-                    placeholder='Password'
-                  />
-                </Form.Item>
+                    <Form.Item
+                      help={touched.phone && errors.phone}
+                      validateStatus={
+                        touched.phone && errors.phone ? 'error' : ''
+                      }
+                    >
+                      <Field
+                        as={Input}
+                        name='phone'
+                        placeholder='Số điện thoại'
+                        size='large'
+                      />
+                    </Form.Item>
 
-                {/* Confirm password */}
-                <Form.Item
-                  help={touched.confirmPassword && errors.confirmPassword}
-                  validateStatus={
-                    touched.confirmPassword && errors.confirmPassword
-                      ? 'error'
-                      : ''
-                  }
-                >
-                  <Field
-                    as={Input.Password}
-                    name='confirmPassword'
-                    placeholder='Confirm password'
-                  />
-                </Form.Item>
+                    <Form.Item
+                      help={touched.password && errors.password}
+                      validateStatus={
+                        touched.password && errors.password ? 'error' : ''
+                      }
+                    >
+                      <Field
+                        as={Input.Password}
+                        name='password'
+                        placeholder='Mật khẩu'
+                        size='large'
+                      />
+                    </Form.Item>
 
-                {/* Address */}
-                <Form.Item
-                  help={touched.address && errors.address}
-                  validateStatus={
-                    touched.address && errors.address ? 'error' : ''
-                  }
-                >
-                  <Field as={Input} name='address' placeholder='Address' />
-                </Form.Item>
+                    <Form.Item
+                      help={touched.confirmPassword && errors.confirmPassword}
+                      validateStatus={
+                        touched.confirmPassword && errors.confirmPassword
+                          ? 'error'
+                          : ''
+                      }
+                    >
+                      <Field
+                        as={Input.Password}
+                        name='confirmPassword'
+                        placeholder='Xác nhận mật khẩu'
+                        size='large'
+                      />
+                    </Form.Item>
 
-                {/* Birth date */}
-                <Form.Item
-                  help={touched.birthday && errors.birthday}
-                  validateStatus={
-                    touched.birthday && errors.birthday ? 'error' : ''
-                  }
-                >
-                  <DatePicker
-                    format='YYYY-MM-DD'
-                    onChange={(dateString) =>
-                      setFieldValue('birthday', dateString)
-                    }
-                    placeholder='Select birth date'
-                    style={{ width: '100%' }}
-                    value={
-                      initialValues.birthday
-                        ? dayjs(initialValues.birthday)
-                        : undefined
-                    }
-                  />
-                </Form.Item>
+                    <Form.Item
+                      help={touched.address && errors.address}
+                      validateStatus={
+                        touched.address && errors.address ? 'error' : ''
+                      }
+                    >
+                      <Field
+                        as={Input}
+                        name='address'
+                        placeholder='Địa chỉ'
+                        size='large'
+                      />
+                    </Form.Item>
 
-                {/* Gender */}
-                <Form.Item
-                  help={touched.gender && errors.gender}
-                  validateStatus={
-                    touched.gender && errors.gender ? 'error' : ''
-                  }
-                >
-                  <Select
-                    defaultValue={true}
-                    onChange={(value) => setFieldValue('gender', value)}
-                  >
-                    <Option value={true}>Male</Option>
-                    <Option value={false}>Female</Option>
-                  </Select>
-                </Form.Item>
+                    <Form.Item
+                      help={touched.birthday && errors.birthday}
+                      validateStatus={
+                        touched.birthday && errors.birthday ? 'error' : ''
+                      }
+                    >
+                      <DatePicker
+                        format='YYYY-MM-DD'
+                        onChange={(dateString) =>
+                          setFieldValue('birthday', dateString)
+                        }
+                        placeholder='Ngày sinh'
+                        style={{ width: '100%' }}
+                        value={
+                          initialValues.birthday
+                            ? dayjs(initialValues.birthday)
+                            : undefined
+                        }
+                        size='large'
+                      />
+                    </Form.Item>
 
-                {/* Register button */}
-                <Form.Item>
-                  <Button
-                    type='primary'
-                    htmlType='submit'
-                    loading={isLoading}
-                    block
-                  >
-                    Register
-                  </Button>
-                </Form.Item>
-              </FormikForm>
-            )}
-          </Formik>
-        </div>
+                    <Form.Item
+                      help={touched.gender && errors.gender}
+                      validateStatus={
+                        touched.gender && errors.gender ? 'error' : ''
+                      }
+                    >
+                      <Select
+                        defaultValue={true}
+                        onChange={(value) => setFieldValue('gender', value)}
+                        size='large'
+                      >
+                        <Option value={true}>Nam</Option>
+                        <Option value={false}>Nữ</Option>
+                      </Select>
+                    </Form.Item>
+                    <h4
+                      style={{
+                        fontSize: '16px',
+                        marginBottom: '20px',
+                        fontWeight: '400',
+                      }}
+                    >
+                      Bạn đã có tài khoản?{' '}
+                      <Link
+                        to='/login'
+                        style={{
+                          color: '#0062E6', // Màu xanh để nổi bật
+                          fontWeight: 'bold',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        Đăng nhập ngay
+                      </Link>
+                    </h4>
+                    <Form.Item>
+                      <Button
+                        type='primary'
+                        htmlType='submit'
+                        loading={isLoading}
+                        block
+                        size='large'
+                      >
+                        Đăng ký
+                      </Button>
+                    </Form.Item>
+                  </FormikForm>
+                )}
+              </Formik>
+            </div>
+          </Col>
+        </Row>
       </Content>
     </Layout>
   )

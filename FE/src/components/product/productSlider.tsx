@@ -52,24 +52,6 @@ export const ProductSlider = () => {
               display: 'flex',
               flexDirection: 'column',
             }}
-            // cover={
-            //   <img
-            //     src={
-            //       vaccine.images && vaccine.images.length > 0
-            //         ? import.meta.env.VITE_IMAGE_ENDPOINT +
-            //           vaccine.images[0].imageSource
-            //         : '/placeholder.svg'
-            //     }
-            //     alt={vaccine.name}
-            //     style={{
-            //       width: '100%',
-            //       height: '200px',
-            //       objectFit: 'cover',
-            //       borderTopLeftRadius: '12px',
-            //       borderTopRightRadius: '12px',
-            //     }}
-            //   />
-            // }
           >
             <div
               style={{

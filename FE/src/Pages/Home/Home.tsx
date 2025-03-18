@@ -9,8 +9,12 @@ const Homepage: React.FC = () => {
   return (
     <Layout>
       <Content>
-        <Title level={1}>Welcome to the our skincare system</Title>
-        <Paragraph>We provide the best skincare products for you.</Paragraph>
+        <Title style={{ display: 'flex', justifyContent: 'center' }} level={1}>
+          Welcome to the our skincare system
+        </Title>
+        <Paragraph style={{ display: 'flex', justifyContent: 'center' }}>
+          We provide the best skincare products for you.
+        </Paragraph>
         <div
           style={{
             width: '100%',

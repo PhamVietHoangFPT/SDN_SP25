@@ -17,7 +17,7 @@ const CustomHeader = () => {
       }}
     >
       {/* Logo */}
-      <div
+      {/* <div
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -40,11 +40,8 @@ const CustomHeader = () => {
         />
         <div
           style={{ display: 'flex', flexDirection: 'column', color: '#fa2e6c' }}
-        >
-          {/* <div>HỆ THỐNG TRUNG TÂM TIÊM CHỦNG VẮC XIN CHO TRẺ EM</div>
-          <div>AN TOÀN - UY TÍN - CHẤT LƯỢNG HÀNG ĐẦU VIỆT NAM *</div> */}
-        </div>
-      </div>
+        ></div>
+      </div> */}
     </Header>
   )
 }
