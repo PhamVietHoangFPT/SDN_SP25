@@ -116,7 +116,7 @@ export default function ShowAllProductsCustomer() {
         {isLoading || isFetching
           ? Array.from({ length: pageSize }).map((_, index) => (
               <Col key={index} xs={24} sm={12} md={8} lg={6}>
-                <Card loading={true} className='w-full h-80' />
+                <Card loading={true} />
               </Col>
             ))
           : data?.products?.map((product) => (
@@ -126,18 +126,15 @@ export default function ShowAllProductsCustomer() {
                   cover={
                     <img
                       alt={product.name}
-                      src={product.images?.[0] || '/placeholder.png'}
-                      className='h-48 object-cover'
+                      src={product.images || '/placeholder.png'}
                     />
                   }
-                  className='w-full'
                   onClick={() => navigate(`/products/${product._id}`)}
+                  style={{ borderRadius: 12, maxHeight: '500px' }}
                 >
                   <Meta title={product.name} description={product.category} />
-                  <p className='text-lg font-semibold text-red-500 mt-2'>
-                    ${product.price}
-                  </p>
-                  <p className='text-sm text-gray-500'>
+                  <p>${product.price}</p>
+                  <p>
                     Đã bán: {product.sold} | Còn trong kho: {product.stock}
                   </p>
                 </Card>

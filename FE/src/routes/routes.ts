@@ -8,6 +8,7 @@ import Register from '../Pages/Register/Register'
 import ShowAllProductsManager from '../Pages/Products/ShowAllProductsCustomer'
 import { LayoutRoute } from '../types/routes'
 import ProductsDetailCustomer from '../Pages/Products/ProductsDetailCustomer'
+import CartDetails from '../Pages/Cart/CartDetails'
 
 const routes: LayoutRoute[] = [
   {
@@ -29,6 +30,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/article',
         component: ArticlePage,
+      },
+      {
+        path: '/cart',
+        component: CartDetails,
       },
     ],
   },
