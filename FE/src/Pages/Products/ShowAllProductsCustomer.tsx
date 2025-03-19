@@ -11,7 +11,7 @@ import {
   Input,
   Layout,
 } from 'antd'
-
+const { Content } = Layout
 const { Meta } = Card
 import { Products } from '../../types/product'
 const { Option } = Select
@@ -87,96 +87,167 @@ export default function ShowAllProductsCustomer() {
 
   return (
     <Layout style={{ minHeight: '100vh', overflow: 'auto' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
-        <Title level={2} style={{ textAlign: 'center', marginBottom: 24 }}>
-          Danh sách sản phẩm
-        </Title>
+      <Content>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
+          <Title level={2} style={{ textAlign: 'center', marginBottom: 24 }}>
+            Danh sách sản phẩm
+          </Title>
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: 24,
-          }}
-        >
-          <Select
-            value={sort ? sort : undefined}
-            style={{ width: 200 }}
-            onChange={setSort}
-            allowClear
-            placeholder='Sắp xếp theo'
-          >
-            {sortValue.map((item) => (
-              <Option key={item.value} value={item.value}>
-                {item.label}
-              </Option>
-            ))}
-          </Select>
-          <Input.Search
-            placeholder='Tìm kiếm sản phẩm'
-            allowClear
-            enterButton
-            style={{ width: 250 }}
-            onSearch={(value) => setProductsName(value)}
-          />
-        </div>
-
-        {/* Hiển thị danh sách sản phẩm */}
-        <Row gutter={[16, 16]} justify='center'>
-          {isLoading || isFetching ? (
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Card loading={true} className='w-full h-80' />
-            </Col>
-          ) : (
-            data.products.map((product) => (
-              <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
-                <Card
-                  hoverable
-                  cover={
-                    <img
-                      alt={product.name}
-                      src={product.images || '/placeholder.png'}
-                      className='h-48 object-cover'
-                    />
-                  }
-                  className='w-full'
-                  onClick={() => navigate(`/products/${product._id}`)}
-                >
-                  <Meta title={product.name} description={product.category} />
-                  <p className='text-lg font-semibold text-red-500 mt-2'>
-                    ${product.price}
-                  </p>
-                  <p className='text-sm text-gray-500'>
-                    Đã bán: {product.sold} | Còn trong kho: {product.stock}
-                  </p>
-                </Card>
-              </Col>
-            ))
-          )}
-        </Row>
-
-        {/* Phân trang */}
-        {!isLoading && (
           <div
             style={{
               display: 'flex',
-              justifyContent: 'center',
-              marginTop: 24,
+              justifyContent: 'space-between',
+              marginBottom: 24,
             }}
           >
-            <Pagination
-              current={pageNumber}
-              pageSize={pageSize}
-              total={data?.totalItems}
-              showSizeChanger
-              onChange={(page, size) => {
-                setPageNumber(page)
-                setPageSize(size)
-              }}
+            <Select
+              value={sort ? sort : undefined}
+              style={{ width: 200 }}
+              onChange={setSort}
+              allowClear
+              placeholder='Sắp xếp theo'
+            >
+              {sortValue.map((item) => (
+                <Option key={item.value} value={item.value}>
+                  {item.label}
+                </Option>
+              ))}
+            </Select>
+            <Input.Search
+              placeholder='Tìm kiếm sản phẩm'
+              allowClear
+              enterButton
+              style={{ width: 250 }}
+              onSearch={(value) => setProductsName(value)}
             />
           </div>
-        )}
-      </div>
+
+          {/* Hiển thị danh sách sản phẩm */}
+          <Row gutter={[16, 16]} justify='center'>
+            {isLoading || isFetching ? (
+              <Col xs={24} sm={12} md={8} lg={6}>
+                <Card loading={true} className='w-full h-80' />
+              </Col>
+            ) : (
+              data.products.map((product) => (
+                <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
+                  <Card
+                    hoverable
+                    cover={
+                      <img
+                        alt={product.name}
+                        src={product.images || '/placeholder.png'}
+                        className='h-48 object-cover'
+                      />
+                    }
+                    className='w-full'
+                    onClick={() => navigate(`/products/${product._id}`)}
+                  >
+                    <Meta title={product.name} description={product.category} />
+                    <p className='text-lg font-semibold text-red-500 mt-2'>
+                      ${product.price}
+                    </p>
+                    <p className='text-sm text-gray-500'>
+                      Đã bán: {product.sold} | Còn trong kho: {product.stock}
+                    </p>
+                  </Card>
+                </Col>
+              ))
+            )}
+          </Row>
+
+          {/* Phân trang */}
+          {!isLoading && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginBottom: 24,
+              }}
+            >
+              <Select
+                value={sort ? sort : undefined}
+                style={{ width: 200 }}
+                onChange={setSort}
+                allowClear
+                placeholder='Sắp xếp theo'
+              >
+                {sortValue.map((item) => (
+                  <Option key={item.value} value={item.value}>
+                    {item.label}
+                  </Option>
+                ))}
+              </Select>
+              <Input.Search
+                placeholder='Tìm kiếm sản phẩm'
+                allowClear
+                enterButton
+                style={{ width: 250 }}
+                onSearch={(value) => setProductsName(value)}
+              />
+            </div>
+          )}
+
+          {/* Hiển thị danh sách sản phẩm */}
+          <Row gutter={[16, 16]} justify='center'>
+            {isLoading || isFetching
+              ? Array.from({ length: pageSize }).map((_, index) => (
+                  <Col key={index} xs={24} sm={12} md={8} lg={6}>
+                    <Card loading={true} className='w-full h-80' />
+                  </Col>
+                ))
+              : data?.products?.map((product) => (
+                  <Col key={product._id} xs={24} sm={12} md={8} lg={6}>
+                    <Card
+                      hoverable
+                      cover={
+                        <img
+                          alt={product.name}
+                          src={product.images?.[0] || '/placeholder.png'}
+                          className='h-48 object-cover'
+                        />
+                      }
+                      className='w-full'
+                      onClick={() => navigate(`/products/${product._id}`)}
+                    >
+                      <Meta
+                        title={product.name}
+                        description={product.category}
+                      />
+                      <p className='text-lg font-semibold text-red-500 mt-2'>
+                        ${product.price}
+                      </p>
+                      <p className='text-sm text-gray-500'>
+                        Đã bán: {product.sold} | Còn trong kho: {product.stock}
+                      </p>
+                    </Card>
+                  </Col>
+                ))}
+          </Row>
+
+          {/* Phân trang */}
+          {!isLoading && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: 24,
+              }}
+            >
+              <Pagination
+                current={pageNumber}
+                pageSize={pageSize}
+                total={data?.totalItems}
+                showSizeChanger
+                onChange={(page, size) => {
+                  setPageNumber(page)
+                  setPageSize(size)
+                }}
+              />
+            </div>
+          )}
+        </div>
+      </Content>
     </Layout>
   )
 }
