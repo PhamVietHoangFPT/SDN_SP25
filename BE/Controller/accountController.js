@@ -13,13 +13,30 @@ const addAccount = async (req, res) => {
 }
 
 const getAllAccount = async (req, res) => {
+  const searchValue = req.query;
+  const pageNumber = parseInt(searchValue.pageNumber) || 1;
+  const pageSize = parseInt(searchValue.pageSize) || 12;
+  const name = searchValue.name || "";
+  // Xây dựng bộ lọc
+  const filter = {};
+  if (name) filter.name = { $regex: name, $options: "i" }; // Tìm kiếm theo tên không phân biệt hoa thường
+
   try {
-    Account.find({})
-      .then((accounts) => {
-        res.status(200).json(accounts)
-      })
+    const accounts = await Account.find(filter)
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    const totalCount = await Account.countDocuments(filter); // Tổng số sản phẩm
+
+    res.json({
+      accounts,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalCount / pageSize),
+      totalItems: totalCount,
+    });
   } catch (error) {
-    console.log(error)
+    console.error(error);
+    res.status(500).json({ message: "Server error when retrieving accounts" });
   }
 }
 
