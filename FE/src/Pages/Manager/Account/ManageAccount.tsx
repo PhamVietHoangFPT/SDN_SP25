@@ -1,25 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import { Account } from '../../../types/account'
-import { useSearchParams } from 'react-router-dom'
-import { useGetAccountListQuery } from '../../../features/account/accountAPI'
-import { DeleteOutlined, EditOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Table } from 'antd'
+import React, { useEffect, useState } from 'react';
+import { Account } from '../../../types/account';
+import { useSearchParams } from 'react-router-dom';
+import { useGetAccountListQuery } from '../../../features/account/accountAPI';
+import { DeleteOutlined, EditOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Table } from 'antd';
+import dayjs from 'dayjs';
+import Cookies from 'js-cookie';
+
 interface AccountListResponse {
     data: {
-        accounts: Account[]
-        totalItems: number
-    }
-    error: any
-    isLoading: boolean
-    isFetching: boolean
+        accounts: Account[];
+        totalItems: number;
+    };
+    error: any;
+    isLoading: boolean;
+    isFetching: boolean;
 }
+
+const userData = Cookies.get('userData')
+    ? JSON.parse(Cookies.get('userData') as string)
+    : null;
+
 const ManageAccount: React.FC = () => {
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams, setSearchParams] = useSearchParams();
     const [currentPage, setCurrentPage] = useState(
         parseInt(searchParams.get('page') || '1', 10)
-    )
-    const [searchTerm, setSearchTerm] = useState(searchParams.get('username') || '')
-    const pageSize = 7
+    );
+    const [searchTerm, setSearchTerm] = useState(searchParams.get('username') || '');
+    const pageSize = 7;
 
     const {
         data: accounts,
@@ -29,16 +37,25 @@ const ManageAccount: React.FC = () => {
         pageNumber: currentPage,
         pageSize: pageSize,
         username: searchTerm,
-    })
-    const dataAccount = accounts?.accounts ?? []
-    const totalAccount = accounts?.totalItems ?? 0
+    });
+
+    const dataAccount = accounts?.accounts ?? [];
+    const totalAccount = accounts?.totalItems ?? 0;
+
+    // Filter out the current user's account
+    const filteredDataAccount = dataAccount.filter((account) =>
+        account.username !== userData?.username
+    );
+    console.log('All accounts:', dataAccount);
+    console.log('Filtered accounts:', filteredDataAccount);
+    console.log('Current user:', userData);
 
     useEffect(() => {
         setSearchParams({
             page: currentPage.toString(),
             username: searchTerm,
-        })
-    }, [currentPage, searchTerm, setSearchParams])
+        });
+    }, [currentPage, searchTerm, setSearchParams]);
 
     if (accountLoading) {
         return (
@@ -51,7 +68,7 @@ const ManageAccount: React.FC = () => {
                     height: '30vh',
                 }}
             />
-        )
+        );
     }
 
     const columns = [
@@ -68,41 +85,50 @@ const ManageAccount: React.FC = () => {
             key: 'username',
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
             title: 'Phone Number',
             dataIndex: 'phoneNumber',
             key: 'phoneNumber',
         },
         {
+            title: 'Date of birth',
+            dataIndex: 'dateOfBirth',
+            key: 'dateOfBirth',
+            render: (dateOfBirth: Date) => {
+                return dateOfBirth ? dayjs(dateOfBirth).format('DD-MM-YYYY') : '-';
+            },
+        },
+        {
+            title: 'Role',
+            dataIndex: 'role',
+            key: 'role',
+        },
+        {
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
+            render: (gender: boolean) => (gender ? 'Male' : 'Female'),
+        },
+        {
             title: 'Update',
             key: 'update',
             render: (_: any) => (
-                <Button
-                    type='primary'
-                    icon={<EditOutlined />}
-                />
+                <Button type="primary" icon={<EditOutlined />} />
             ),
         },
         {
             title: 'Delete',
             key: 'delete',
             render: (_: any) => (
-                <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                />
+                <Button danger icon={<DeleteOutlined />} />
             ),
         },
-    ]
+    ];
+
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
             <div style={{ marginBottom: 16 }}>
                 <Input
-                    placeholder='Search by name'
+                    placeholder="Search by name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     style={{ width: 300 }}
@@ -112,7 +138,7 @@ const ManageAccount: React.FC = () => {
             </div>
             <Table
                 columns={columns}
-                dataSource={dataAccount.map((item, index) => ({
+                dataSource={filteredDataAccount.map((item, index) => ({
                     ...item,
                     key: item._id,
                     index: (currentPage - 1) * pageSize + index + 1,
@@ -123,13 +149,14 @@ const ManageAccount: React.FC = () => {
                 pagination={{
                     current: currentPage,
                     pageSize: pageSize,
-                    total: totalAccount,
+                    total: totalAccount - (userData ? 1 : 0), // Adjust total count
                     onChange: (page) => {
-                        setCurrentPage(page)
+                        setCurrentPage(page);
                     },
                 }}
             />
         </div>
-    )
-}
-export default ManageAccount
+    );
+};
+
+export default ManageAccount;

@@ -1,6 +1,6 @@
 export interface Account {
     _id: string;
-    usename: string;
+    username: string;
     dateOfBirth: Date;
     email: string;
     role: string;
