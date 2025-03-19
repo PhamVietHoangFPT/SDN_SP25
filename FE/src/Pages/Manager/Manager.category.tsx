@@ -12,7 +12,7 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
-import { Button, Input, message, Table } from 'antd'
+import { Button, Input, message, Modal, Table } from 'antd'
 import UpdateCategoryModal from '../../components/modal/updateCategoryModal'
 import AddCategoryModal from '../../components/modal/addCategoryModal'
 
@@ -52,15 +52,29 @@ const ManageCategory: React.FC = () => {
   const [deleteCategory, { isLoading: isDeleting }] =
     useDeleteCategoryMutation()
 
-  const handleDelete = async (_id: string) => {
-    try {
-      await deleteCategory(_id).unwrap()
-      message.success('Category deleted successfully!')
-    } catch (error: any) {
-      console.error('Delete error:', error)
-      message.error(error.data?.message || 'Không thể cập nhật thông tin')
-    }
-  }
+
+   const handleDelete = (_id: string) => {
+          Modal.confirm({
+              title: 'Confirm Deletion',
+              content: 'Are you sure you want to delete this category? This action cannot be undone.',
+              okText: 'Yes, Delete',
+              okType: 'danger',
+              cancelText: 'No, Cancel',
+              onOk: async () => {
+                try {
+                  await deleteCategory(_id).unwrap()
+                  message.success('Category deleted successfully!')
+                } catch (error: any) {
+                  console.error('Delete error:', error)
+                  message.error(error.data?.message || 'Không thể cập nhật thông tin')
+                }
+              },
+              onCancel() {
+                  // Do nothing if canceled
+              },
+          });
+      };
+  
   useEffect(() => {
     setSearchParams({
       page: currentPage.toString(),
