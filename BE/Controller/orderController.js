@@ -60,12 +60,14 @@ const addOrder = async (req, res) => {
     );
 
     const newOrder = new Order({
-      account: new mongoose.Types.ObjectId(account),
-      products: products.map((p) => ({
-        product: new mongoose.Types.ObjectId(p.product._id),
-        quantity: p.quantity,
+      account: account,
+      items: products.map((item) => ({
+        product: item.product._id,
+        quantity: item.quantity,
+        price: item.product.price,
       })),
-      total,
+      total: total,
+
     });
 
     await newOrder.save();
