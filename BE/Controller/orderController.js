@@ -6,6 +6,9 @@ const staff = require("../constant/constant").staff;
 
 const getAllOrder = async (req, res) => {
   const user = req.user;
+  const status = req.query.status;
+  const filter = {};
+  if (status) filter.status = { $regex: status, $options: "i" };
   if (!user) {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -13,11 +16,11 @@ const getAllOrder = async (req, res) => {
     let orders
 
     if (user.role === customer) {
-      orders = await Order.find({ account: user.id })
+      orders = await Order.find({ $and: [{ account: user.id }, filter] })
         .populate("account")
         .populate("products.product");
     } else if (user.role === manager || user.role === staff) {
-      orders = await Order.find()
+      orders = await Order.find(filter)
         .populate("account")
         .populate("products.product");
     }

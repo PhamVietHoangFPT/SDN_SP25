@@ -156,13 +156,13 @@ export default function CartDetails() {
     <>
       <Card title='Cart Details'>
         <Table
-          dataSource={cart.items}
+          dataSource={cart?.items || []}
           columns={columns}
           rowKey='_id'
           pagination={false}
         />
         <h3 style={{ marginTop: 16 }}>
-          Total: {cart.total.toLocaleString()} VND
+          Total: {cart ? cart.total.toLocaleString() : 0} VND
         </h3>
       </Card>
       <Button type='primary' style={{ marginTop: 16 }} onClick={handleCheckout}>

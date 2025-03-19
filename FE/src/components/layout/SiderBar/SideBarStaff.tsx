@@ -2,9 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react'
 import {
   MailOutlined,
   LogoutOutlined,
-  TeamOutlined,
-  SmileOutlined,
-  UserAddOutlined,
 } from '@ant-design/icons'
 import { MenuProps, Layout } from 'antd'
 import { Menu } from 'antd'
@@ -39,41 +36,14 @@ const SideBarStaff: React.FC = () => {
     setCurrent(path)
   }, [location.pathname])
 
-  const userData = Cookies.get('userData')
-    ? JSON.parse(Cookies.get('userData') as string)
-    : null
   // Define menu items with useMemo for performance
   const items = useMemo((): CustomMenuItem[] => {
     return [
       {
         key: 'sub0',
-        label: `Welcome, ${userData?.username}`,
-        icon: <SmileOutlined />,
-        url: '/manager/account',
-      },
-      {
-        key: 'sub3',
-        label: 'Account',
-        icon: <TeamOutlined />,
-        url: 'manager/account',
-      },
-      {
-        key: 'sub10',
-        label: 'Category',
-        icon: <UserAddOutlined />,
-        url: '/manager/category',
-      },
-      {
-        key: 'sub1',
-        label: 'Product',
+        label: 'Orders',
         icon: <MailOutlined />,
-        url: '/managerProduct',
-      },
-      {
-        key: 'sub2',
-        label: 'Articles',
-        icon: <TeamOutlined />,
-        url: 'managerArticles',
+        url: '/staff/orders',
       },
       {
         key: 'sub5',

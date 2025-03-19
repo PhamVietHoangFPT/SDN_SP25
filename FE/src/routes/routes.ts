@@ -13,6 +13,8 @@ import ManagerLayout from '../components/layout/StaffLayout'
 import ManagerHome from '../Pages/Manager/ManagerHome'
 import ManageCategory from '../Pages/Manager/Manager.category'
 import ProductManagement from '../components/Manager/ProductManager/ProductManager'
+import Order from '../Pages/Order/Order'
+import StaffOrder from '../Pages/Staff/StaffOrder'
 
 const routes: LayoutRoute[] = [
   {
@@ -30,6 +32,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/products/:id',
         component: ProductsDetailCustomer,
+      },
+      {
+        path: '/orders',
+        component: Order,
       },
       {
         path: '/article',
@@ -78,6 +84,17 @@ const routes: LayoutRoute[] = [
       {
         path: '/register',
         component: Register,
+      },
+    ],
+  },
+
+  {
+    layout: ManagerLayout,
+    data: [
+      {
+        path: '/staff/orders',
+        component: StaffOrder,
+        role: ['Staff'],
       },
     ],
   },
