@@ -1,5 +1,5 @@
 const Product = require("../Models/Product");
-
+const mongoose = require("mongoose");
 const getAllProduct = async (req, res) => {
   try {
     const products = await Product.find({});
@@ -27,6 +27,9 @@ const getProductById = async (req, res) => {
 const addProduct = async (req, res) => {
   try {
     const { name, price, description, category, stock, sold, images } = req.body;
+    if (category && !mongoose.Types.ObjectId.isValid(category)) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
     if (!name || !price || !category || !stock || !images) {
       return res
         .status(400)
@@ -37,7 +40,7 @@ const addProduct = async (req, res) => {
       name,
       price,
       description,
-      category,
+      category: new mongoose.Types.ObjectId(category),
       stock,
       images: images,
       sold: sold || 0,
@@ -53,9 +56,20 @@ const addProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+    const { category, ...updateData } = req.body;
+
+    if (category && !mongoose.Types.ObjectId.isValid(category)) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
+
+    if (category) {
+      updateData.category = new mongoose.Types.ObjectId(category);
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
       new: true,
     });
+
     if (!updatedProduct)
       return res.status(404).json({ message: "No Products Found" });
 

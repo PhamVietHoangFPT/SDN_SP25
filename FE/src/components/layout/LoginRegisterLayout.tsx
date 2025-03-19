@@ -13,7 +13,6 @@ function LoginRegisterLayout() {
     >
       <Content
         style={{
-          margin: '24px',
           overflow: 'initial',
           width: '100vw',
         }}

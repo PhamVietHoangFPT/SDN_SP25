@@ -8,9 +8,11 @@ import Register from '../Pages/Register/Register'
 import ShowAllProductsManager from '../Pages/Products/ShowAllProductsCustomer'
 import { LayoutRoute } from '../types/routes'
 import ProductsDetailCustomer from '../Pages/Products/ProductsDetailCustomer'
+import CartDetails from '../Pages/Cart/CartDetails'
 import ManagerLayout from '../components/layout/StaffLayout'
 import ManagerHome from '../Pages/Manager/ManagerHome'
 import ManageCategory from '../Pages/Manager/Manager.category'
+import ProductManagement from '../components/Manager/ProductManager/ProductManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -33,6 +35,10 @@ const routes: LayoutRoute[] = [
         path: '/article',
         component: ArticlePage,
       },
+      {
+        path: '/cart',
+        component: CartDetails,
+      },
     ],
   },
   {
@@ -49,18 +55,19 @@ const routes: LayoutRoute[] = [
         component: ManageCategory,
         role: ['Manager'],
       },
-    ],
-  },
-  // ManagerManager
-  {
-    layout: MainLayout,
-    data: [
       {
         path: '/managerArticles',
         component: ArticleManagementSystem,
       },
+
+      {
+        path: '/managerProduct',
+        component: ProductManagement,
+      },
     ],
   },
+  // ManagerManager
+
   {
     layout: LoginRegisterLayout,
     data: [

@@ -1,6 +1,6 @@
-import { Typography, Space, Carousel, Card, Spin } from 'antd'
+import { Typography, Space, Carousel, Card, Spin, Image } from 'antd'
 import { Products } from '../../types/product'
-import { useGetProductListQuery } from '../../features/product/productAPI'
+import { useGetProductListCustomerQuery } from '../../features/product/productAPI'
 const { Title, Text, Paragraph } = Typography
 interface ProductsResponse {
   data: {
@@ -11,10 +11,11 @@ interface ProductsResponse {
 }
 
 export const ProductSlider = () => {
-  const { data, error, isLoading } = useGetProductListQuery<ProductsResponse>({
-    pageSize: 10,
-    pageNumber: 1,
-  })
+  const { data, error, isLoading } =
+    useGetProductListCustomerQuery<ProductsResponse>({
+      pageSize: 10,
+      pageNumber: 1,
+    })
 
   if (isLoading)
     return (
@@ -38,37 +39,21 @@ export const ProductSlider = () => {
         { breakpoint: 1024, settings: { slidesToShow: 2 } }, // Tablet
         { breakpoint: 768, settings: { slidesToShow: 1 } }, // Mobile
       ]}
+      style={{ height: '200px' }}
     >
       {data.products.map((product) => (
-        <div key={product.id}>
+        <div key={product._id}>
           <Card
             hoverable
             style={{
+              width: '75%',
               borderRadius: '12px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
               margin: '8px',
-              minHeight: '400px', // Giữ chiều cao đồng đều
+              height: '300px',
               display: 'flex',
               flexDirection: 'column',
             }}
-            // cover={
-            //   <img
-            //     src={
-            //       vaccine.images && vaccine.images.length > 0
-            //         ? import.meta.env.VITE_IMAGE_ENDPOINT +
-            //           vaccine.images[0].imageSource
-            //         : '/placeholder.svg'
-            //     }
-            //     alt={vaccine.name}
-            //     style={{
-            //       width: '100%',
-            //       height: '200px',
-            //       objectFit: 'cover',
-            //       borderTopLeftRadius: '12px',
-            //       borderTopRightRadius: '12px',
-            //     }}
-            //   />
-            // }
           >
             <div
               style={{
@@ -77,6 +62,7 @@ export const ProductSlider = () => {
                 flexDirection: 'column',
               }}
             >
+              <Image src='${product.image}' />
               <Title level={4}>{product.name}</Title>
               <Paragraph style={{ flexGrow: 1 }}>
                 {product.description}
