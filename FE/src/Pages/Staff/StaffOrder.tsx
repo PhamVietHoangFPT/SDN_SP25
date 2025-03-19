@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useGetOrdersQuery } from '../../features/order/orderAPI'
+import { useGetOrdersQuery, useUpdateOrderMutation } from '../../features/order/orderAPI'
 import { Order as OrderType } from '../../types/order'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Table, Select, Spin, Tag, Button } from 'antd'
+import { Table, Select, Spin, Tag, Button, message } from 'antd'
 
 const { Option } = Select
 
@@ -12,6 +12,7 @@ const validStatuses = [
   'Delivered',
   'Cancelled',
   'Paid',
+  'Refunded'
 ]
 
 interface OrderResponse {
@@ -25,6 +26,7 @@ export default function StaffOrder() {
   const navigate = useNavigate()
 
   const { data, isLoading } = useGetOrdersQuery<OrderResponse>({ status })
+  const [updateOrder, { isLoading: isUpdating }] = useUpdateOrderMutation()
 
   const updateURL = useCallback(() => {
     const params = new URLSearchParams()
@@ -39,7 +41,15 @@ export default function StaffOrder() {
     return () => clearTimeout(handler)
   }, [updateURL])
 
-  // Columns for the nested product table
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      await updateOrder({ id: orderId, status: newStatus }).unwrap()
+      message.success(`Order status updated to ${newStatus}`)
+    } catch (error) {
+      message.error('Failed to update order status')
+    }
+  }
+
   const productColumns = [
     {
       title: 'Product Name',
@@ -60,12 +70,11 @@ export default function StaffOrder() {
     {
       title: 'Subtotal',
       key: 'subtotal',
-      render: (record: any) => 
+      render: (record: any) =>
         `${(record.product.price * record.quantity).toLocaleString()} VND`,
     },
   ]
 
-  // Main order table columns
   const columns = [
     {
       title: '#',
@@ -77,11 +86,11 @@ export default function StaffOrder() {
       title: 'Products',
       dataIndex: 'products',
       key: 'products',
-      render: (products: any[]) => 
+      render: (products: any[]) =>
         products.map((p) => p.product.name).join(', '),
     },
     {
-      title: 'Total Quantity',
+      title: 'Quantity',
       dataIndex: 'products',
       key: 'quantity',
       render: (products: any[]) =>
@@ -118,15 +127,55 @@ export default function StaffOrder() {
       ),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: 'Actions',
+      key: 'actions',
       render: (record: OrderType) => (
-        <Button
-          type='link'
-          onClick={() => navigate(`/staff/orders/${record._id}`)}
-        >
-          View
-        </Button>
+        <div>
+          {record.status === 'Processing' && (
+            <>
+              <Button
+                type='primary'
+                size='small'
+                onClick={() => handleStatusChange(record._id, 'Pending')}
+                loading={isUpdating}
+                style={{ marginRight: 8 }}
+              >
+                Confirm
+              </Button>
+              <Button
+                type='default'
+                size='small'
+                danger
+                onClick={() => handleStatusChange(record._id, 'Cancelled')}
+                loading={isUpdating}
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+          {record.status === 'Paid' && (
+            <>
+              <Button
+                type='primary'
+                size='small'
+                onClick={() => handleStatusChange(record._id, 'Delivered')}
+                loading={isUpdating}
+                style={{ marginRight: 8 }}
+              >
+                Delivered
+              </Button>
+              <Button
+                type='default'
+                size='small'
+                danger
+                onClick={() => handleStatusChange(record._id, 'Refunded')}
+                loading={isUpdating}
+              >
+                Refunded
+              </Button>
+            </>
+          )}
+        </div>
       ),
     },
   ]
@@ -150,9 +199,9 @@ export default function StaffOrder() {
       {isLoading ? (
         <Spin size='large' />
       ) : (
-        <Table 
-          dataSource={data || []} 
-          columns={columns} 
+        <Table
+          dataSource={data || []}
+          columns={columns}
           rowKey='_id'
           expandable={{
             expandedRowRender: (record) => (
