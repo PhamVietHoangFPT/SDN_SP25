@@ -53,11 +53,11 @@ const UpdateCategoryModal: React.FC<UpdateCategoryModalProps> = ({
                 id,
                 data: inputValues,
             }).unwrap()
-            message.success('Cập nhật thông tin trẻ thành công!')
+            message.success('Successfully updated')
             onClose()
         } catch (err: any) {
             console.error('Lỗi từ API:', err) //
-            message.error(err.data?.message || 'Không thể cập nhật thông tin trẻ')
+            message.error(err.data?.message || 'Fail to update')
         }
     }
     if (childrenDetailError) {
