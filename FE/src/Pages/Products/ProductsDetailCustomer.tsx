@@ -4,6 +4,8 @@ import { Button, Card, InputNumber, notification } from 'antd'
 import { Products } from '../../types/product'
 import { useState } from 'react'
 import { useAddToCartMutation } from '../../features/cart/cartAPI'
+import Cookies from 'js-cookie'
+import { useNavigate } from 'react-router-dom'
 interface ProductsResponse {
   data: Products
   isLoading: boolean
@@ -11,10 +13,12 @@ interface ProductsResponse {
 
 export default function ProductsDetailCustomer() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { data, isLoading } =
     useGetProductDetailCustomerQuery<ProductsResponse>(id)
   const [addToCart] = useAddToCartMutation()
   const [quantity, setQuantity] = useState(1)
+  const token = Cookies.get('userToken')
 
   const handleAddToCart = async () => {
     try {
@@ -27,7 +31,7 @@ export default function ProductsDetailCustomer() {
     } catch (error: any) {
       notification.error({
         message: 'Error',
-        description: error.message as string,
+        description: error.data.message as string,
         placement: 'topRight',
       })
     }
@@ -63,7 +67,7 @@ export default function ProductsDetailCustomer() {
           <strong>Description:</strong> {data.description}
         </p>
         <p>
-          <strong>Category:</strong> {data.category}
+          <strong>Category:</strong> {data.category?.name}
         </p>
         <p>
           <strong>Stock:</strong> {data.stock} products
@@ -77,9 +81,15 @@ export default function ProductsDetailCustomer() {
             onChange={(value) => setQuantity(value ?? 1)}
             style={{ marginRight: 10 }}
           />
-          <Button type='primary' onClick={() => handleAddToCart()}>
-            Add to Cart
-          </Button>
+          {token ? (
+            <Button type='primary' onClick={() => handleAddToCart()}>
+              Add to Cart
+            </Button>
+          ) : (
+            <Button type='primary' onClick={() => navigate('/login')}>
+              Đăng nhập để tiếp tục
+            </Button>
+          )}
         </div>
       </Card>
     </>

@@ -3,6 +3,7 @@ import {
   useGetCartQuery,
   useUpdateCartMutation,
   useRemoveFromCartMutation,
+  useClearCartMutation,
 } from '../../features/cart/cartAPI'
 import { Cart } from '../../types/cart'
 import { useAddOrderMutation } from '../../features/order/orderAPI'
@@ -15,6 +16,7 @@ export default function CartDetails() {
   const [updateCart] = useUpdateCartMutation()
   const [removeFromCart] = useRemoveFromCartMutation()
   const [addOrder] = useAddOrderMutation()
+  const [clearCart] = useClearCartMutation()
   if (isLoading) return <p>Loading...</p>
 
   const handleIncrease = async (id: string, quantity: number) => {
@@ -92,6 +94,7 @@ export default function CartDetails() {
         description: result.message, // Detailed content
         placement: 'topRight', // Display position
       })
+      clearCart({})
     } catch (error: any) {
       notification.error({
         message: 'Error',
