@@ -1,6 +1,8 @@
 const Order = require("../Models/Order");
 const mongoose = require("mongoose");
-import { customer, manager, staff } from "../constant/constant";
+const customer = require("../constant/constant").customer;
+const manager = require("../constant/constant").manager;
+const staff = require("../constant/constant").staff;
 
 const getAllOrder = async (req, res) => {
   const user = req.user;

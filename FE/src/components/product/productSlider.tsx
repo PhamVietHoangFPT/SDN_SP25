@@ -1,6 +1,6 @@
 import { Typography, Space, Carousel, Card, Spin, Image } from 'antd'
 import { Products } from '../../types/product'
-import { useGetProductListQuery } from '../../features/product/productAPI'
+import { useGetProductListCustomerQuery } from '../../features/product/productAPI'
 const { Title, Text, Paragraph } = Typography
 interface ProductsResponse {
   data: {
@@ -11,10 +11,11 @@ interface ProductsResponse {
 }
 
 export const ProductSlider = () => {
-  const { data, error, isLoading } = useGetProductListQuery<ProductsResponse>({
-    pageSize: 10,
-    pageNumber: 1,
-  })
+  const { data, error, isLoading } =
+    useGetProductListCustomerQuery<ProductsResponse>({
+      pageSize: 10,
+      pageNumber: 1,
+    })
 
   if (isLoading)
     return (
