@@ -1,11 +1,21 @@
 const Order = require("../Models/Order");
 const mongoose = require("mongoose");
+import { customer, manager, staff } from "../constant/constant";
 
 const getAllOrder = async (req, res) => {
+  const user = req.user;
+
   try {
-    const orders = await Order.find()
-      .populate("account")
-      .populate("products.product");
+    let orders
+    if (user.role === customer) {
+      orders = await Order.find({ account: user._id })
+        .populate("account")
+        .populate("products.product");
+    } else if (user.role === manager || user.role === staff) {
+      orders = await Order.find()
+        .populate("account")
+        .populate("products.product");
+    }
     res.status(200).json(orders);
   } catch (error) {
     res
@@ -50,7 +60,7 @@ const addOrder = async (req, res) => {
     const newOrder = new Order({
       account: new mongoose.Types.ObjectId(account),
       products: products.map((p) => ({
-        product: new mongoose.Types.ObjectId(p.product),
+        product: new mongoose.Types.ObjectId(p.product._id),
         quantity: p.quantity,
       })),
       total,

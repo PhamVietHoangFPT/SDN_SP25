@@ -5,7 +5,7 @@ import {
   useRemoveFromCartMutation,
 } from '../../features/cart/cartAPI'
 import { Cart } from '../../types/cart'
-
+import { useAddOrderMutation } from '../../features/order/orderAPI'
 interface CartResponse {
   data: Cart
   isLoading: boolean
@@ -14,6 +14,7 @@ export default function CartDetails() {
   const { data: cart, isLoading } = useGetCartQuery<CartResponse>({})
   const [updateCart] = useUpdateCartMutation()
   const [removeFromCart] = useRemoveFromCartMutation()
+  const [addOrder] = useAddOrderMutation()
   if (isLoading) return <p>Loading...</p>
 
   const handleIncrease = async (id: string, quantity: number) => {
@@ -80,6 +81,26 @@ export default function CartDetails() {
     }
   }
 
+  const handleCheckout = async () => {
+    try {
+      const result = await addOrder({
+        account: cart.account,
+        products: cart.items,
+      }).unwrap()
+      notification.success({
+        message: 'Success', // Notification title
+        description: result.message, // Detailed content
+        placement: 'topRight', // Display position
+      })
+    } catch (error: any) {
+      notification.error({
+        message: 'Error',
+        description: error.data.error as string,
+        placement: 'topRight',
+      })
+    }
+  }
+
   const columns = [
     {
       title: 'Product',
@@ -129,16 +150,21 @@ export default function CartDetails() {
   ]
 
   return (
-    <Card title='Cart Details'>
-      <Table
-        dataSource={cart.items}
-        columns={columns}
-        rowKey='_id'
-        pagination={false}
-      />
-      <h3 style={{ marginTop: 16 }}>
-        Total: {cart.total.toLocaleString()} VND
-      </h3>
-    </Card>
+    <>
+      <Card title='Cart Details'>
+        <Table
+          dataSource={cart.items}
+          columns={columns}
+          rowKey='_id'
+          pagination={false}
+        />
+        <h3 style={{ marginTop: 16 }}>
+          Total: {cart.total.toLocaleString()} VND
+        </h3>
+      </Card>
+      <Button type='primary' style={{ marginTop: 16 }} onClick={handleCheckout}>
+        Checkout
+      </Button>
+    </>
   )
 }
