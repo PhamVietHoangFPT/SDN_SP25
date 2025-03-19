@@ -6,11 +6,14 @@ const staff = require("../constant/constant").staff;
 
 const getAllOrder = async (req, res) => {
   const user = req.user;
-
+  if (!user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   try {
     let orders
+
     if (user.role === customer) {
-      orders = await Order.find({ account: user._id })
+      orders = await Order.find({ account: user.id })
         .populate("account")
         .populate("products.product");
     } else if (user.role === manager || user.role === staff) {
@@ -29,9 +32,20 @@ const getAllOrder = async (req, res) => {
 const getOrderByID = async (req, res) => {
   try {
     const { id } = req.params;
-    const order = await Order.findById(id)
-      .populate("account")
-      .populate("products.product");
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    let order
+    if (user.role === customer) {
+      order = await Order.find({ account: user._id })
+        .populate("account")
+        .populate("products.product");
+    } else if (user.role === manager || user.role === staff) {
+      order = await Order.findById(id)
+        .populate("account")
+        .populate("products.product");
+    }
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
@@ -59,9 +73,15 @@ const addOrder = async (req, res) => {
       0
     );
 
+    console.log(products.map((item) => ({
+      product: item.product._id,
+      quantity: item.quantity,
+      price: item.product.price,
+    })),)
+
     const newOrder = new Order({
       account: account,
-      items: products.map((item) => ({
+      products: products.map((item) => ({
         product: item.product._id,
         quantity: item.quantity,
         price: item.product.price,
