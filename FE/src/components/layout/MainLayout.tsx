@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
 import Navbar from './Navbar/Navbar'
+import Footer from './Footer/Footer'
 
 const { Content } = Layout
 
@@ -23,6 +24,7 @@ function MainLayout() {
       >
         <Outlet />
       </Content>
+      <Footer/>
     </Layout>
   )
 }

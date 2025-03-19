@@ -1,0 +1,125 @@
+/* Navbar.css */
+.ant-layout-header {
+    background: linear-gradient(135deg, #34c759, #00b894)!important;
+    /* Đồng bộ gradient hồng */
+    padding: 0 20px;
+    height: 80px;
+    line-height: 80px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.ant-menu-horizontal {
+    background: transparent !important;
+    /* Trong suốt để lộ gradient */
+    border-bottom: none !important;
+    /* Bỏ border mặc định */
+    line-height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.ant-menu-item,
+.ant-menu-submenu {
+    color: #fff3e0 !important;
+    /* Màu kem nhạt cho text */
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin: 0 15px !important;
+}
+
+.ant-menu-item:hover,
+.ant-menu-submenu:hover,
+.ant-menu-item-selected,
+.ant-menu-submenu-selected {
+    color: #ffffff !important;
+    /* Trắng khi hover hoặc selected */
+    background: rgba(255, 255, 255, 0.1) !important;
+    /* Nền mờ khi hover */
+}
+
+.ant-menu-item::after,
+.ant-menu-submenu::after {
+    border-bottom: 2px solid #ffffff !important;
+    /* Đường gạch chân trắng khi active */
+}
+
+/* Logo container */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-right: 30px;
+}
+
+.logo-container img {
+    width: 50px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    /* Viền trắng cho logo */
+    transition: transform 0.3s ease;
+}
+
+.logo-container img:hover {
+    transform: scale(1.1);
+    /* Phóng to nhẹ khi hover */
+}
+
+/* Submenu styling */
+.ant-menu-submenu-popup {
+    background: linear-gradient(135deg, #34c759, #00b894) !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.ant-menu-submenu-popup .ant-menu {
+    background: transparent !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-item {
+    color: #fff3e0 !important;
+    margin: 0 !important;
+    padding: 0 20px !important;
+}
+
+.ant-menu-submenu-popup .ant-menu-item:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Icon styling */
+.ant-menu-item-icon,
+.anticon {
+    font-size: 16px;
+    margin-right: 8px;
+    color: inherit !important;
+}
+
+/* FontAwesome icon */
+.fa-icon {
+    font-size: 16px;
+    margin-right: 8px;
+    color: inherit;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .ant-menu-horizontal {
+        justify-content: flex-start;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .logo-container {
+        margin-right: 15px;
+    }
+
+    .ant-menu-item,
+    .ant-menu-submenu {
+        margin: 0 10px !important;
+    }
+}

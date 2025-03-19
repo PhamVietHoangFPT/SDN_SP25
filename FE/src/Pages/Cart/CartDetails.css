@@ -1,0 +1,180 @@
+/* CartDetails.css */
+.cart-container {
+    max-width: 1800px;
+    /* Chiều rộng tối đa, có thể tăng nếu cần */
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.cart-wrapper {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    /* Đảm bảo chiếm toàn bộ chiều rộng container */
+}
+
+.cart-header {
+    background: linear-gradient(135deg, #34c759, #00b894);
+    /* Gradient xanh lá */
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    padding: 16px;
+    border-radius: 12px 12px 0 0;
+}
+
+.cart-table {
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-table-header th {
+    background: #f5f5f5;
+    /* Nền xám nhạt cho header */
+    color: #34c759;
+    /* Xanh lá cho tiêu đề cột */
+    font-weight: 600;
+    border-bottom: 2px solid #34c759;
+    padding: 12px;
+    text-align: left;
+}
+
+.cart-table-body td {
+    border-bottom: 1px solid #e8e8e8;
+    padding: 12px;
+}
+
+.cart-table-body tr:hover td {
+    background: #fafafa;
+    /* Nền sáng hơn khi hover */
+}
+
+/* Nút tăng/giảm số lượng */
+.quantity-controls .quantity-btn {
+    border-radius: 6px;
+    border: 1px solid #34c759;
+    color: #34c759;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quantity-controls .quantity-btn:hover {
+    background: #34c759;
+    color: #fff;
+    border-color: #34c759;
+}
+
+.quantity-controls .quantity-input {
+    width: 60px;
+    border-radius: 6px;
+    border: 1px solid #34c759;
+    text-align: center;
+    height: 32px;
+    line-height: 32px;
+}
+
+/* Nút Remove */
+.remove-btn {
+    background: #ff4d4f;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background: #ff7875;
+}
+
+/* Tổng tiền */
+.cart-total {
+    font-size: 18px;
+    font-weight: 600;
+    color: #00b894;
+    /* Xanh lá ngọc cho tổng tiền */
+    margin: 16px 20px 20px 0;
+    text-align: right;
+}
+
+/* Nút Checkout */
+.checkout-btn {
+    background: linear-gradient(135deg, #34c759, #00b894);
+    /* Gradient xanh lá */
+    border: none;
+    border-radius: 8px;
+    padding: 8px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    display: block;
+    margin: 16px auto 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checkout-btn:hover,
+.checkout-btn:focus {
+    background: linear-gradient(135deg, #2db44e, #009e7a);
+    /* Gradient đậm hơn khi hover */
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cart-container {
+        padding: 0 8px;
+    }
+
+    .cart-wrapper {
+        width: 100%;
+    }
+
+    .cart-header {
+        font-size: 18px;
+    }
+
+    .cart-table-header th,
+    .cart-table-body td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .quantity-controls .quantity-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .quantity-controls .quantity-input {
+        width: 50px;
+        height: 28px;
+        line-height: 28px;
+    }
+
+    .remove-btn {
+        padding: 4px 8px;
+    }
+
+    .cart-total {
+        font-size: 16px;
+        text-align: center;
+        margin: 16px 0;
+    }
+
+    .checkout-btn {
+        width: 100%;
+    }
+}
