@@ -46,9 +46,6 @@ const ManageAccount: React.FC = () => {
     const filteredDataAccount = dataAccount.filter((account) =>
         account.username !== userData?.username
     );
-    console.log('All accounts:', dataAccount);
-    console.log('Filtered accounts:', filteredDataAccount);
-    console.log('Current user:', userData);
 
     useEffect(() => {
         setSearchParams({
