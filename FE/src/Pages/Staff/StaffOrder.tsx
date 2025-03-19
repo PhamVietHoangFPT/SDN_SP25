@@ -9,9 +9,9 @@ const { Option } = Select
 const validStatuses = [
   'Processing',
   'Pending',
-  'Shipped',
   'Delivered',
   'Cancelled',
+  'Paid',
 ]
 
 interface OrderResponse {
