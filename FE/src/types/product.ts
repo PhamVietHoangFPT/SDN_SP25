@@ -5,6 +5,15 @@ export interface Products {
   price: number
   stock: number
   sold: number
-  category: string
+  category: {
+    _id: number
+    name: string
+    createdAt: string
+    updatedAt: string
+    __v: number
+  }
   images: string
+  createdAt: string
+  updatedAt: string
+  __v: number
 }

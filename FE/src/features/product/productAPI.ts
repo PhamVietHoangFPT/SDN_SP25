@@ -2,6 +2,20 @@ import { apiSlice } from '../../apis/apiSlice'
 
 export const productsApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
+    getProductListCustomer: build.query({
+      query: ({ pageNumber, pageSize, sort, name }) => ({
+        url: '/products',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+          sort,
+          name,
+        },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['products'],
+    }),
     getProductList: build.query({
       query: ({ pageNumber, pageSize, sort, name }) => ({
         url: '/manage/products',
@@ -12,6 +26,14 @@ export const productsApi = apiSlice.injectEndpoints({
           sort,
           name,
         },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['products'],
+    }),
+    getProductDetailCustomer: build.query({
+      query: (id) => ({
+        url: `products/${id}`,
+        method: 'GET',
       }),
       transformResponse: (res) => res,
       providesTags: ['products'],
@@ -47,22 +69,16 @@ export const productsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['products'],
     }),
-    getCategories: build.query({
-      query: () => ({
-        url: '/category', // Sửa thành /category để khớp với backend
-        method: 'GET',
-      }),
-      transformResponse: (res) => res.categories,
-      providesTags: ['categories'],
-    }),
   }),
 })
 
 export const {
   useGetProductListQuery,
   useGetProductDetailQuery,
+  useGetProductDetailCustomerQuery,
   useAddProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
-  useGetCategoriesQuery,
+
+  useGetProductListCustomerQuery,
 } = productsApi
