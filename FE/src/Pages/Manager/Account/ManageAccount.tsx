@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Account } from '../../../types/account';
 import { useSearchParams } from 'react-router-dom';
 import { useGetAccountListQuery } from '../../../features/account/accountAPI';
-import { DeleteOutlined, EditOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Table } from 'antd';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 import UpdateAccountModal from '../../../components/modal/updateAccountModal';
+import AddAccountModal from '../../../components/modal/addAccountModal';
 
 interface AccountListResponse {
     data: {
@@ -147,6 +148,13 @@ const ManageAccount: React.FC = () => {
                     prefix={<SearchOutlined />}
                     allowClear
                 />
+                <Button
+                    type='primary'
+                    icon={<PlusOutlined />}
+                    onClick={() => setIsAddModalVisible(true)}
+                >
+                    Add Account
+                </Button>
             </div>
             <Table
                 columns={columns}
@@ -168,10 +176,14 @@ const ManageAccount: React.FC = () => {
                 }}
             />
             <UpdateAccountModal
-                    visible={isDetailModalVisible}
-                    id={selectedChildId}
-                    onClose={handleDetailModalClose}
-                  />
+                visible={isDetailModalVisible}
+                id={selectedChildId}
+                onClose={handleDetailModalClose}
+            />
+            <AddAccountModal
+                visible={isAddModalVisible}
+                onClose={() => setIsAddModalVisible(false)}
+            />
         </div>
     );
 };
