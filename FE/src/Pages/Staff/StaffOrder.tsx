@@ -35,11 +35,37 @@ export default function StaffOrder() {
   useEffect(() => {
     const handler = setTimeout(() => {
       updateURL()
-    }, 500) // Debounce 500ms
-
+    }, 500)
     return () => clearTimeout(handler)
   }, [updateURL])
 
+  // Columns for the nested product table
+  const productColumns = [
+    {
+      title: 'Product Name',
+      dataIndex: ['product', 'name'],
+      key: 'name',
+    },
+    {
+      title: 'Price',
+      dataIndex: ['product', 'price'],
+      key: 'price',
+      render: (price: number) => `${price.toLocaleString()} VND`,
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Subtotal',
+      key: 'subtotal',
+      render: (record: any) => 
+        `${(record.product.price * record.quantity).toLocaleString()} VND`,
+    },
+  ]
+
+  // Main order table columns
   const columns = [
     {
       title: '#',
@@ -48,23 +74,24 @@ export default function StaffOrder() {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: 'Product',
+      title: 'Products',
       dataIndex: 'products',
       key: 'products',
-      render: (products: any[]) =>
+      render: (products: any[]) => 
         products.map((p) => p.product.name).join(', '),
     },
     {
-      title: 'Quantity',
+      title: 'Total Quantity',
       dataIndex: 'products',
       key: 'quantity',
       render: (products: any[]) =>
         products.reduce((sum, p) => sum + p.quantity, 0),
     },
     {
-      title: 'Total',
+      title: 'Total Amount',
       dataIndex: 'total',
       key: 'total',
+      render: (total: number) => `${total.toLocaleString()} VND`,
     },
     {
       title: 'Status',
@@ -123,7 +150,22 @@ export default function StaffOrder() {
       {isLoading ? (
         <Spin size='large' />
       ) : (
-        <Table dataSource={data || []} columns={columns} rowKey='_id' />
+        <Table 
+          dataSource={data || []} 
+          columns={columns} 
+          rowKey='_id'
+          expandable={{
+            expandedRowRender: (record) => (
+              <Table
+                columns={productColumns}
+                dataSource={record.products}
+                pagination={false}
+                rowKey="_id"
+              />
+            ),
+            rowExpandable: (record) => record.products && record.products.length > 0,
+          }}
+        />
       )}
     </div>
   )

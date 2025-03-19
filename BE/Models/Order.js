@@ -24,7 +24,7 @@ const orderSchema = new Schema(
     status: {
       type: String,
       required: true,
-      default: "Pending",
+      default: "Processing",
     },
     total: {
       type: Number,
