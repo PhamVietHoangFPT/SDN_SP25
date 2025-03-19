@@ -120,9 +120,9 @@ const updateOrderByID = async (req, res) => {
       const validStatuses = [
         "Processing",
         "Pending",
-        "Shipped",
         "Delivered",
         "Cancelled",
+        "Paid"
       ];
       if (!validStatuses.includes(status)) {
         return res.status(400).json({ error: "Invalid status value" });
