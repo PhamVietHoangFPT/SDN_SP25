@@ -3,10 +3,10 @@ const Account = require('../Models/Account')
 const addAccount = async (req, res) => {
   try {
     // Define allowed fields
-    const { email, username, dateOfBirth, gender, phoneNumber, address, password } = req.body;
+    const { email, username, dateOfBirth, gender, phoneNumber, address, password, role } = req.body;
 
     // Check for required fields
-    if (!email || !username || !password ) {
+    if (!email || !username || !password) {
       return res.status(400).json({ message: "Please fill in required fields" });
     }
     // Check if username already exists
@@ -23,7 +23,8 @@ const addAccount = async (req, res) => {
       gender,
       phoneNumber,
       address,
-      password, // Ensure this is hashed in the model or middleware
+      password,
+      role// Ensure this is hashed in the model or middleware
     };
 
     const account = new Account(accountData);
