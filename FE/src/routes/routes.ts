@@ -14,6 +14,7 @@ import ManageCategory from '../Pages/Manager/Manager.category'
 import ProductManagement from '../components/Manager/ProductManager/ProductManager'
 import ManageAccount from '../Pages/Manager/Account/ManageAccount'
 import UserProfile from '../Pages/Profile/userProfile'
+import editProfile from '../Pages/Profile/editProfile'
 
 const routes: LayoutRoute[] = [
   {
@@ -43,6 +44,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/profile',
         component: UserProfile,
+      },
+      {
+        path: '/profile/edit-profile',
+        component: editProfile,
       },
     ],
   },
