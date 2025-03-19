@@ -1,6 +1,7 @@
 import React from 'react'
 import { Layout, Typography } from 'antd'
 import { ProductSlider } from '../../components/product/productSlider'
+import { Banner } from '../../components/layout/Banner/Banner'
 
 const { Content } = Layout
 const { Title, Paragraph } = Typography
@@ -9,11 +10,12 @@ const Homepage: React.FC = () => {
   return (
     <Layout>
       <Content>
+        <Banner />
         <Title style={{ display: 'flex', justifyContent: 'center' }} level={1}>
-          Welcome to the our skincare system
+          Chào mừng bạn đến với hệ thống chăm sóc da của chúng tôi
         </Title>
         <Paragraph style={{ display: 'flex', justifyContent: 'center' }}>
-          We provide the best skincare products for you.
+          Chúng tôi cung cấp các sản phẩm chăm sóc da tốt nhất cho bạn.
         </Paragraph>
         <div
           style={{
@@ -35,7 +37,7 @@ const Homepage: React.FC = () => {
               level={2}
               style={{ textAlign: 'center', marginBottom: '32px' }}
             >
-              Popular Products
+              Sản phẩm phổ biến
             </Title>
             {/* <ProductSlider /> */}
           </div>

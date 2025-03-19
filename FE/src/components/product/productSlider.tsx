@@ -1,4 +1,4 @@
-import { Typography, Space, Carousel, Card, Spin } from 'antd'
+import { Typography, Space, Carousel, Card, Spin, Image } from 'antd'
 import { Products } from '../../types/product'
 import { useGetProductListQuery } from '../../features/product/productAPI'
 const { Title, Text, Paragraph } = Typography
@@ -49,6 +49,7 @@ export const ProductSlider = () => {
               borderRadius: '12px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
               margin: '8px',
+              height: '300px',
               display: 'flex',
               flexDirection: 'column',
             }}
@@ -60,6 +61,7 @@ export const ProductSlider = () => {
                 flexDirection: 'column',
               }}
             >
+              <Image src='${product.image}' />
               <Title level={4}>{product.name}</Title>
               <Paragraph style={{ flexGrow: 1 }}>
                 {product.description}

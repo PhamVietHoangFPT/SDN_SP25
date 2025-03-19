@@ -3,7 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-const cors = require('cors')
+const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -22,7 +22,8 @@ const orderRouter = require("./routes/orderRouter");
 const cartRoutes = require("./routes/cartRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
-const categoryRouter = require('./routes/category.route')
+const categoryRouter = require("./routes/category.route");
+const accountIdRouter = require("./routes/profileRoutes");
 var app = express();
 const uri = process.env.MONGO_URI;
 const connect = mongoose.connect(uri);
@@ -34,11 +35,13 @@ connect.then((db) => {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
-app.use(cors({
-  origin: '*', // Cho phép tất cả origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Các phương thức HTTP được phép
-  allowedHeaders: ['Content-Type', 'Authorization'] // Các header được phép
-}))
+app.use(
+  cors({
+    origin: "*", // Cho phép tất cả origin
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Các phương thức HTTP được phép
+    allowedHeaders: ["Content-Type", "Authorization"], // Các header được phép
+  })
+);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -57,8 +60,9 @@ app.use("/articles", articleRoutes);
 app.use("/orders", orderRouter);
 app.use("/cart", cartRoutes);
 app.use("/payment", paymentRoutes);
-app.use("/category",categoryRouter)
+app.use("/category", categoryRouter);
 app.use("/booking", bookingRoutes);
+app.use("/profile", accountIdRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
