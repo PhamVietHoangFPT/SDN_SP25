@@ -26,30 +26,35 @@ export default function ProductForm({
   const isEditing = !!product
 
   const {
-    data: categories = [],
+    data,
     isLoading: isLoadingCategories,
     error,
   } = useGetCategoryListQuery({})
+
+  const categories = data?.categories || []
+  console.log('Dữ liệu từ API:', data)
   console.log('Categories:', categories)
-  console.log('Error:', error)
+  console.log('Product:', product) // Log để kiểm tra khi sửa
+  console.log('Lỗi:', error)
 
   const handleSubmit = () => {
     form
       .validateFields()
       .then((values) => {
+        console.log('Dữ liệu gửi đi:', values) // Log để kiểm tra giá trị gửi lên
         onSave(values)
       })
       .catch((error) => {
-        console.log('Validation failed:', error)
+        console.log('Xác thực thất bại:', error)
       })
   }
 
   return (
     <Modal
       open={open}
-      title={isEditing ? 'Edit Product' : 'Add New Product'}
-      okText={isEditing ? 'Update' : 'Create'}
-      cancelText='Cancel'
+      title={isEditing ? 'Sửa Sản Phẩm' : 'Thêm Sản Phẩm Mới'}
+      okText={isEditing ? 'Cập Nhật' : 'Tạo'}
+      cancelText='Hủy'
       onCancel={onCancel}
       onOk={handleSubmit}
     >
@@ -61,39 +66,45 @@ export default function ProductForm({
       >
         <Form.Item
           name='name'
-          label='Product Name'
-          rules={[{ required: true, message: 'Please enter product name' }]}
+          label='Tên Sản Phẩm'
+          rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm' }]}
         >
-          <Input placeholder='Enter product name' />
+          <Input placeholder='Nhập tên sản phẩm' />
         </Form.Item>
 
         <Form.Item
           name='category'
-          label='Category'
-          rules={[{ required: true, message: 'Please select a category' }]}
+          label='Danh Mục'
+          rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
         >
           <Select
-            placeholder='Select a category'
+            placeholder='Chọn danh mục'
             loading={isLoadingCategories}
             disabled={isLoadingCategories || categories.length === 0}
           >
-            {categories.map((category: any) => (
-              <Select.Option key={category._id} value={category.name}>
-                {category.name}
+            {Array.isArray(categories) && categories.length > 0 ? (
+              categories.map((category: any) => (
+                <Select.Option key={category._id} value={category._id}>
+                  {category.name} {/* Hiển thị tên */}
+                </Select.Option>
+              ))
+            ) : (
+              <Select.Option disabled value=''>
+                Không có danh mục
               </Select.Option>
-            ))}
+            )}
           </Select>
         </Form.Item>
 
         <Form.Item
           name='price'
-          label='Price ($)'
-          rules={[{ required: true, message: 'Please enter price' }]}
+          label='Giá ($)'
+          rules={[{ required: true, message: 'Vui lòng nhập giá' }]}
         >
           <InputNumber
             min={0}
             precision={2}
-            placeholder='Enter price'
+            placeholder='Nhập giá'
             className='w-full'
             addonBefore='$'
           />
@@ -101,37 +112,33 @@ export default function ProductForm({
 
         <Form.Item
           name='stock'
-          label='Stock'
-          rules={[{ required: true, message: 'Please enter stock quantity' }]}
+          label='Số Lượng Tồn'
+          rules={[{ required: true, message: 'Vui lòng nhập số lượng tồn' }]}
         >
           <InputNumber
             min={0}
-            placeholder='Enter stock quantity'
+            placeholder='Nhập số lượng tồn'
             className='w-full'
           />
         </Form.Item>
 
-        <Form.Item
-          name='description'
-          label='Description'
-          rules={[{ required: false }]}
-        >
-          <Input.TextArea placeholder='Enter product description' rows={3} />
+        <Form.Item name='description' label='Mô Tả'>
+          <Input.TextArea placeholder='Nhập mô tả sản phẩm' rows={3} />
         </Form.Item>
 
         <Form.Item
           name='images'
-          label='Image URL'
-          rules={[{ required: true, message: 'Please enter image URL' }]}
+          label='URL Hình Ảnh'
+          rules={[{ required: true, message: 'Vui lòng nhập URL hình ảnh' }]}
         >
-          <Input placeholder='Enter image URL (e.g., http://example.com/image.jpg)' />
+          <Input placeholder='Nhập URL hình ảnh (ví dụ: http://example.com/image.jpg)' />
         </Form.Item>
 
         {isEditing && (
-          <Form.Item name='sold' label='Sold'>
+          <Form.Item name='sold' label='Đã Bán'>
             <InputNumber
               min={0}
-              placeholder='Number of items sold'
+              placeholder='Số lượng đã bán'
               className='w-full'
               disabled
             />

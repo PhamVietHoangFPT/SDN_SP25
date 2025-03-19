@@ -22,6 +22,7 @@ import {
   useUpdateProductMutation,
   useDeleteProductMutation,
 } from '../../../features/product/productAPI'
+import { useGetCategoryListQuery } from '../../../features/category/categoryAPI' // Thêm import
 
 export default function ProductManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -30,9 +31,9 @@ export default function ProductManagement() {
   const [form] = Form.useForm()
 
   const {
-    data,
+    data: productData,
     isLoading: isFetchingProducts,
-    isError,
+    isError: isProductError,
   } = useGetProductListQuery({
     pageNumber: 1,
     pageSize: 100,
@@ -40,7 +41,11 @@ export default function ProductManagement() {
     name: searchText,
   })
 
-  const products = Array.isArray(data) ? data : []
+  const { data: categoryData, isLoading: isFetchingCategories } =
+    useGetCategoryListQuery({}) // Lấy danh sách danh mục
+
+  const products = Array.isArray(productData) ? productData : []
+  const categories = categoryData?.categories || [] // Danh sách danh mục
 
   const [addProduct, { isLoading: isAdding }] = useAddProductMutation()
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation()
@@ -61,9 +66,9 @@ export default function ProductManagement() {
   const handleDelete = async (id: string) => {
     try {
       await deleteProduct(id).unwrap()
-      message.success('Product deleted successfully')
+      message.success('Xóa sản phẩm thành công')
     } catch (error) {
-      message.error('Failed to delete product')
+      message.error('Xóa sản phẩm thất bại')
     }
   }
 
@@ -75,15 +80,17 @@ export default function ProductManagement() {
           id: editingProduct._id,
           ...values,
         }).unwrap()
-        message.success('Product updated successfully')
+        message.success('Cập nhật sản phẩm thành công')
       } else {
         await addProduct(values).unwrap()
-        message.success('Product added successfully')
+        message.success('Thêm sản phẩm thành công')
       }
       setIsModalOpen(false)
       form.resetFields()
     } catch (error) {
-      message.error(`Failed to ${editingProduct ? 'update' : 'add'} product`)
+      message.error(
+        `Không thể ${editingProduct ? 'cập nhật' : 'thêm'} sản phẩm`
+      )
     }
   }
 
@@ -93,7 +100,7 @@ export default function ProductManagement() {
 
   const columns = [
     {
-      title: 'Image',
+      title: 'Hình Ảnh',
       dataIndex: 'images',
       key: 'images',
       render: (text: string) => (
@@ -106,38 +113,40 @@ export default function ProductManagement() {
       ),
     },
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
       sorter: (a: any, b: any) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Category',
+      title: 'Danh Mục',
       dataIndex: 'category',
       key: 'category',
-      filters: Array.from(new Set(products.map((p: any) => p.category))).map(
-        (category) => ({
-          text: category,
-          value: category,
-        })
-      ),
+      render: (categoryId: string) => {
+        const category = categories.find((cat: any) => cat._id === categoryId)
+        return category ? category.name : 'Không xác định' // Hiển thị tên thay vì _id
+      },
+      filters: categories.map((category: any) => ({
+        text: category.name, // Hiển thị tên trong bộ lọc
+        value: category._id, // Giá trị lọc vẫn là _id
+      })),
       onFilter: (value: any, record: any) => record.category === value,
     },
     {
-      title: 'Price ($)',
+      title: 'Giá ($)',
       dataIndex: 'price',
       key: 'price',
       sorter: (a: any, b: any) => a.price - b.price,
       render: (price: number) => `$${price.toFixed(2)}`,
     },
     {
-      title: 'Stock',
+      title: 'Tồn Kho',
       dataIndex: 'stock',
       key: 'stock',
       sorter: (a: any, b: any) => a.stock - b.stock,
     },
     {
-      title: 'Actions',
+      title: 'Hành Động',
       key: 'actions',
       render: (_: any, record: any) => (
         <Space size='middle'>
@@ -147,17 +156,17 @@ export default function ProductManagement() {
             onClick={() => handleEdit(record)}
             loading={isUpdating && editingProduct?._id === record._id}
           >
-            Edit
+            Sửa
           </Button>
           <Popconfirm
-            title='Delete this product?'
-            description='Are you sure you want to delete this product?'
+            title='Xóa sản phẩm này?'
+            description='Bạn có chắc muốn xóa sản phẩm này không?'
             onConfirm={() => handleDelete(record._id)}
-            okText='Yes'
-            cancelText='No'
+            okText='Có'
+            cancelText='Không'
           >
             <Button danger icon={<DeleteOutlined />} loading={isDeleting}>
-              Delete
+              Xóa
             </Button>
           </Popconfirm>
         </Space>
@@ -165,14 +174,14 @@ export default function ProductManagement() {
     },
   ]
 
-  if (isError) {
-    return <div>Error loading products. Please try again later.</div>
+  if (isProductError) {
+    return <div>Lỗi khi tải sản phẩm. Vui lòng thử lại sau.</div>
   }
 
   return (
     <div className='space-y-6'>
       <div className='flex justify-between items-center'>
-        <Typography.Title level={2}>Product Management</Typography.Title>
+        <Typography.Title level={2}>Quản Lý Sản Phẩm</Typography.Title>
         <Button
           type='primary'
           icon={<PlusOutlined />}
@@ -180,13 +189,13 @@ export default function ProductManagement() {
           loading={isAdding}
           style={{ marginBottom: '20px' }}
         >
-          Add Product
+          Thêm Sản Phẩm
         </Button>
       </div>
 
       <div className='mb-4'>
         <Input
-          placeholder='Search products by name or category'
+          placeholder='Tìm kiếm sản phẩm theo tên hoặc danh mục'
           prefix={<SearchOutlined />}
           onChange={(e) => handleSearch(e.target.value)}
           className='max-w-md'
@@ -199,7 +208,7 @@ export default function ProductManagement() {
         columns={columns}
         dataSource={products}
         rowKey='_id'
-        loading={isFetchingProducts}
+        loading={isFetchingProducts || isFetchingCategories} // Thêm isFetchingCategories
         pagination={{ pageSize: 5 }}
       />
 
