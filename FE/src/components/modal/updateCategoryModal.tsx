@@ -34,7 +34,6 @@ const UpdateCategoryModal: React.FC<UpdateCategoryModalProps> = ({
 
   const [updateChildren, { isLoading: isUpdating }] =
     useUpdateCategoryMutation()
-
   const childrenDetail = childrenDetailData ?? null
   console.log(childrenDetail)
   const [form] = Form.useForm()
