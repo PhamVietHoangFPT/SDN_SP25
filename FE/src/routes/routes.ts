@@ -13,6 +13,7 @@ import ManagerLayout from '../components/layout/StaffLayout'
 import ManageCategory from '../Pages/Manager/Manager.category'
 import ProductManagement from '../components/Manager/ProductManager/ProductManager'
 import ManageAccount from '../Pages/Manager/Account/ManageAccount'
+import UserProfile from '../Pages/Profile/userProfile'
 
 const routes: LayoutRoute[] = [
   {
@@ -38,6 +39,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/cart',
         component: CartDetails,
+      },
+      {
+        path: '/profile',
+        component: UserProfile,
       },
     ],
   },
