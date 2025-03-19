@@ -3,9 +3,10 @@ import { apiSlice } from '../../apis/apiSlice'
 export const orderApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getOrders: build.query({
-      query: () => ({
+      query: ({ status }) => ({
         url: '/orders',
         method: 'GET',
+        params: { status },
       }),
       transformResponse: (res) => res,
       providesTags: ['orders'],

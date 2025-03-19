@@ -4,8 +4,7 @@ import {
   LoginOutlined,
   UserOutlined,
   LogoutOutlined,
-  CalendarOutlined,
-  InfoCircleOutlined,
+  ShoppingCartOutlined,
 } from '@ant-design/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyringe } from '@fortawesome/free-solid-svg-icons'
@@ -38,24 +37,9 @@ const Navbar: React.FC = () => {
       { key: 'home', icon: <HomeOutlined />, label: 'Trang chủ', url: '/' },
       {
         key: 'products',
-        icon: <FontAwesomeIcon icon={faSyringe} />,
         label: 'Sản phẩm',
+        icon: <FontAwesomeIcon icon={faSyringe} />,
         url: '/products?pageNumber=1&pageSize=12',
-      },
-      {
-        key: 'appointments',
-        icon: <CalendarOutlined />,
-        label: 'Lịch hẹn',
-        url: '/vaccineRegistration',
-      },
-      {
-        key: 'about',
-        icon: <InfoCircleOutlined />,
-        label: 'Về chúng tôi',
-        children: [
-          { key: 'about1', label: 'About us 1', url: '/abouts/abouts1' },
-          { key: 'about2', label: 'About us 2', url: '/abouts/abouts2' },
-        ],
       },
       {
         key: userData ? 'profile' : 'login',
@@ -126,18 +110,28 @@ const Navbar: React.FC = () => {
             }}
           />
         </div>
-        {items.map((item) =>
-          item.children ? (
-            <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
-              {item.children.map((child) => (
-                <Menu.Item key={child.key}>{child.label}</Menu.Item>
-              ))}
-            </Menu.SubMenu>
-          ) : (
-            <Menu.Item key={item.key} icon={item.icon}>
-              {item.label}
-            </Menu.Item>
-          )
+        {items.map((item) => (
+          <Menu.Item key={item.key} icon={item.icon}>
+            {item.label}
+          </Menu.Item>
+        ))}
+        {userData && (
+          <Menu.Item
+            key='cart'
+            icon={<ShoppingCartOutlined />}
+            onClick={() => navigate('/cart')}
+          >
+            Giỏ hàng của bạn
+          </Menu.Item>
+        )}
+        {userData && (
+          <Menu.Item
+            key='orders'
+            icon={<ShoppingCartOutlined />}
+            onClick={() => navigate('/orders')}
+          >
+            Đơn hàng đã đặt
+          </Menu.Item>
         )}
         {userData && (
           <Menu.Item

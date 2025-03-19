@@ -1,10 +1,10 @@
 import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
-import SideBarStaff from './SiderBar/SideBarStaff'
+import SideBarManager from './SiderBar/SideBarManager'
 
 const { Content } = Layout
 
-function StaffLayout() {
+function ManagerLayout() {
   return (
     <Layout
       style={{
@@ -12,7 +12,7 @@ function StaffLayout() {
         overflow: 'hidden',
       }}
     >
-      <SideBarStaff></SideBarStaff>
+      <SideBarManager></SideBarManager>
       <Content
         style={{
           margin: '24px',
@@ -26,4 +26,4 @@ function StaffLayout() {
   )
 }
 
-export default StaffLayout
+export default ManagerLayout

@@ -10,14 +10,18 @@ const checkRole = (requiredRole) => {
 
       const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
-      requiredRole.includes(decoded.role) ? null : res.status(403).json({ message: "Forbidden" });
+      if (!requiredRole.includes(decoded.role)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
 
-      req.user = decoded; // Lưu thông tin user vào request
+      req.user = decoded;
       next();
     } catch (error) {
+      console.error("Token error:", error.message);
       return res.status(401).json({ message: "Invalid token" });
     }
   };
 };
+
 
 module.exports = checkRole;

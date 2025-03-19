@@ -12,9 +12,11 @@ import CartDetails from '../Pages/Cart/CartDetails'
 import ManagerLayout from '../components/layout/StaffLayout'
 import ManageCategory from '../Pages/Manager/Manager.category'
 import ProductManagement from '../components/Manager/ProductManager/ProductManager'
+import Order from '../Pages/Order/Order'
+import StaffOrder from '../Pages/Staff/StaffOrder'
 import ManageAccount from '../Pages/Manager/Account/ManageAccount'
 import UserProfile from '../Pages/Profile/userProfile'
-import editProfile from '../Pages/Profile/editProfile'
+import EditProfile from '../Pages/Profile/editProfile'
 
 const routes: LayoutRoute[] = [
   {
@@ -34,6 +36,10 @@ const routes: LayoutRoute[] = [
         component: ProductsDetailCustomer,
       },
       {
+        path: '/orders',
+        component: Order,
+      },
+      {
         path: '/article',
         component: ArticlePage,
       },
@@ -47,7 +53,7 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/profile/edit-profile',
-        component: editProfile,
+        component: EditProfile,
       },
     ],
   },
@@ -93,6 +99,17 @@ const routes: LayoutRoute[] = [
       {
         path: '/register',
         component: Register,
+      },
+    ],
+  },
+
+  {
+    layout: ManagerLayout,
+    data: [
+      {
+        path: '/staff/orders',
+        component: StaffOrder,
+        role: ['Staff'],
       },
     ],
   },
