@@ -40,6 +40,65 @@ const getAllAccount = async (req, res) => {
   }
 }
 
+const getAccountById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const account = await Account.findById(id);
+    if (!account) {
+      return res.status(404).json({ message: "No Account Found" });
+    }
+    res.status(200).json(account);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error when retrieving account" });
+  }
+};
+const mongoose = require('mongoose');
+
+const updateAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid account ID" });
+    }
+
+    // Define allowed fields to update
+    const { email, username, dateOfBirth, gender, phoneNumber, address } = req.body;
+    const updateData = {
+      ...(email && { email }),
+      ...(username && { username }),
+      ...(dateOfBirth && { dateOfBirth }),
+      ...(gender !== undefined && { gender }), // Allow falsey values like false
+      ...(phoneNumber && { phoneNumber }),
+      ...(address && { address }),
+    };
+
+    // Check if there's anything to update
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ message: "No valid fields provided for update" });
+    }
+    // Update the account
+    const updatedAccount = await Account.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true } // Run schema validators
+    );
+
+    if (!updatedAccount) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    res.status(200).json({ data: updatedAccount });
+  } catch (error) {
+    console.error("Error updating account:", error);
+    res.status(500).json({
+      message: "Server error when updating account",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
 const deleteAccount = async (req, res) => {
   try {
     const deleteAccount = await Account.findByIdAndDelete(req.params.accountID)
@@ -53,4 +112,4 @@ const deleteAccount = async (req, res) => {
   }
 }
 
-module.exports = { addAccount, getAllAccount, deleteAccount }
+module.exports = { addAccount, getAllAccount, deleteAccount, getAccountById, updateAccount }
