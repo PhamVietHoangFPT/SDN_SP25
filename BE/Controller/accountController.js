@@ -16,10 +16,10 @@ const getAllAccount = async (req, res) => {
   const searchValue = req.query;
   const pageNumber = parseInt(searchValue.pageNumber) || 1;
   const pageSize = parseInt(searchValue.pageSize) || 12;
-  const name = searchValue.name || "";
+  const username = searchValue.username || "";
   // Xây dựng bộ lọc
   const filter = {};
-  if (name) filter.name = { $regex: name, $options: "i" }; // Tìm kiếm theo tên không phân biệt hoa thường
+  if (username) filter.username = { $regex: username, $options: "i" }; // Tìm kiếm theo tên không phân biệt hoa thường
 
   try {
     const accounts = await Account.find(filter)

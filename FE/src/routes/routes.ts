@@ -10,9 +10,9 @@ import { LayoutRoute } from '../types/routes'
 import ProductsDetailCustomer from '../Pages/Products/ProductsDetailCustomer'
 import CartDetails from '../Pages/Cart/CartDetails'
 import ManagerLayout from '../components/layout/StaffLayout'
-import ManagerHome from '../Pages/Manager/ManagerHome'
 import ManageCategory from '../Pages/Manager/Manager.category'
 import ProductManagement from '../components/Manager/ProductManager/ProductManager'
+import ManageAccount from '../Pages/Manager/Account/ManageAccount'
 
 const routes: LayoutRoute[] = [
   {
@@ -46,7 +46,7 @@ const routes: LayoutRoute[] = [
     data: [
       {
         path: '/manager/',
-        component: ManagerHome,
+        component: ManageAccount,
         exact: true,
         role: ['Manager'],
       },
@@ -63,6 +63,11 @@ const routes: LayoutRoute[] = [
       {
         path: '/managerProduct',
         component: ProductManagement,
+      },
+      {
+        path: '/manager/account',
+        component: ManageAccount,
+        role: ['Manager'],
       },
     ],
   },
