@@ -41,6 +41,14 @@ export const AccountApi = apiSlice.injectEndpoints({
             transformResponse: (res) => res,
             invalidatesTags: ['account'], // Invalidate the 'category' tag to refetch the list
         }),
+        deleteAccount: build.mutation({
+            query: (id) => ({
+                url: `/accounts/${id}`,
+                method: 'DELETE',
+            }),
+            transformResponse: (res) => res,
+            invalidatesTags: ['account'], // Invalidate the 'category' tag to refetch related data
+        }),
     }),
 })
 
@@ -48,5 +56,6 @@ export const {
     useGetAccountListQuery,
     useGetAccountDetailQuery,
     useUpdateAccountMutation,
-    useAddAccountMutation
+    useAddAccountMutation,
+    useDeleteAccountMutation
 } = AccountApi

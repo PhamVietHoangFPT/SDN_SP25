@@ -128,7 +128,8 @@ const updateAccount = async (req, res) => {
 };
 const deleteAccount = async (req, res) => {
   try {
-    const deleteAccount = await Account.findByIdAndDelete(req.params.accountID)
+    const {id} = req.params
+    const deleteAccount = await Account.findByIdAndDelete(id)
     if (!deleteAccount) {
       res.status(404).json({ message: 'Not found!' })
     } else {

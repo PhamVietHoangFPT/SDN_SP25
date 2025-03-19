@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Account } from '../../../types/account';
 import { useSearchParams } from 'react-router-dom';
-import { useGetAccountListQuery } from '../../../features/account/accountAPI';
+import { useDeleteAccountMutation, useGetAccountListQuery } from '../../../features/account/accountAPI';
 import { DeleteOutlined, EditOutlined, LoadingOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Table } from 'antd';
+import { Button, Input, message, Modal, Table } from 'antd';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
 import UpdateAccountModal from '../../../components/modal/updateAccountModal';
@@ -51,6 +51,30 @@ const ManageAccount: React.FC = () => {
     const filteredDataAccount = dataAccount.filter((account) =>
         account.username !== userData?.username
     );
+    const [deleteAccount, { isLoading: isDeleting }] =
+        useDeleteAccountMutation()
+
+    const handleDelete = (id: string) => {
+        Modal.confirm({
+            title: 'Confirm Deletion',
+            content: 'Are you sure you want to delete this account? This action cannot be undone.',
+            okText: 'Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await deleteAccount(id).unwrap();
+                    message.success('Account deleted successfully!');
+                } catch (error: any) {
+                    console.error('Delete error:', error);
+                    message.error(error.data?.message || 'Failed to delete account');
+                }
+            },
+            onCancel() {
+                // Do nothing if canceled
+            },
+        });
+    };
     useEffect(() => {
         setSearchParams({
             page: currentPage.toString(),
@@ -126,8 +150,13 @@ const ManageAccount: React.FC = () => {
         {
             title: 'Delete',
             key: 'delete',
-            render: (_: any) => (
-                <Button danger icon={<DeleteOutlined />} />
+            render: (_: any, record: Account) => (
+                <Button
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleDelete(record._id)}
+                    loading={isDeleting}
+                />
             ),
         },
     ];
