@@ -10,11 +10,7 @@ const checkRole = (requiredRole) => {
 
       const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
-      if (decoded.role !== requiredRole) {
-        return res
-          .status(403)
-          .json({ message: "Forbidden: Insufficient role" });
-      }
+      requiredRole.includes(decoded.role) ? null : res.status(403).json({ message: "Forbidden" });
 
       req.user = decoded; // Lưu thông tin user vào request
       next();
