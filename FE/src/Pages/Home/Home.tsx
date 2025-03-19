@@ -39,7 +39,7 @@ const Homepage: React.FC = () => {
             >
               Sản phẩm phổ biến
             </Title>
-            {/* <ProductSlider /> */}
+            <ProductSlider />
           </div>
         </div>
       </Content>
