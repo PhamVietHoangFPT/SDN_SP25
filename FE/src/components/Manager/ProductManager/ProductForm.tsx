@@ -6,7 +6,7 @@ import {
   Select,
   type FormInstance,
 } from 'antd'
-import { useGetCategoriesQuery } from '../../../features/product/productAPI'
+import { useGetCategoryListQuery } from '../../../features/category/categoryAPI'
 
 interface ProductFormProps {
   open: boolean
@@ -29,7 +29,7 @@ export default function ProductForm({
     data: categories = [],
     isLoading: isLoadingCategories,
     error,
-  } = useGetCategoriesQuery()
+  } = useGetCategoryListQuery({})
   console.log('Categories:', categories)
   console.log('Error:', error)
 

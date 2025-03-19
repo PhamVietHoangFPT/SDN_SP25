@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { useGetProductDetailQuery } from '../../features/product/productAPI'
+import { useGetProductDetailCustomerQuery } from '../../features/product/productAPI'
 import { Button, Card, InputNumber, notification } from 'antd'
 import { Products } from '../../types/product'
 import { useState } from 'react'
@@ -11,7 +11,8 @@ interface ProductsResponse {
 
 export default function ProductsDetailCustomer() {
   const { id } = useParams()
-  const { data, isLoading } = useGetProductDetailQuery<ProductsResponse>(id)
+  const { data, isLoading } =
+    useGetProductDetailCustomerQuery<ProductsResponse>(id)
   const [addToCart] = useAddToCartMutation()
   const [quantity, setQuantity] = useState(1)
 
