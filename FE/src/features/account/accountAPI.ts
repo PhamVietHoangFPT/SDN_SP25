@@ -15,9 +15,28 @@ export const AccountApi = apiSlice.injectEndpoints({
             transformResponse: (res) => res,
             providesTags: ['account'],
         }),
+        getAccountDetail: build.query({
+            query: (id) => ({
+                url: `/accounts/${id}`,
+                method: 'GET',
+            }),
+            transformResponse: (res) => res,
+            providesTags: ['account'],
+        }),
+        updateAccount: build.mutation({
+            query: ({ id, data }) => ({
+                url: `/accounts/${id}`,
+                method: 'PUT',
+                body: data,
+            }),
+            transformResponse: (res) => res,
+            invalidatesTags: ['account'],
+        }),
     }),
 })
 
 export const {
-    useGetAccountListQuery
+    useGetAccountListQuery,
+    useGetAccountDetailQuery,
+    useUpdateAccountMutation
 } = AccountApi

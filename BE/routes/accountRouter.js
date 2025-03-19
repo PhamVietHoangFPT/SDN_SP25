@@ -6,10 +6,11 @@ const checkRole = require("../middlewares/authMiddleware");
 const manager = require("../constant/constant").manager;
 
 accountRouter.route('/')
-  .get(accountController.getAllAccount)
+  .get(checkRole(manager), accountController.getAllAccount)
+  .post(accountController.addAccount)
 
 accountRouter.route('/:id')
-  .get(accountController.getAccountById)
-  .put(accountController.updateAccount)
+  .get(checkRole(manager), accountController.getAccountById)
+  .put(checkRole(manager), accountController.updateAccount)
   .delete(checkRole(manager), accountController.deleteAccount)
 module.exports = accountRouter;

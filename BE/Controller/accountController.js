@@ -2,15 +2,42 @@ const Account = require('../Models/Account')
 
 const addAccount = async (req, res) => {
   try {
-    const account = new Account(req.body)
-    account.save()
-      .then((newAccount) => {
-        res.status(200).json(newAccount)
-      })
+    // Define allowed fields
+    const { email, username, dateOfBirth, gender, phoneNumber, address, password } = req.body;
+
+    // Check for required fields
+    if (!email || !username || !password ) {
+      return res.status(400).json({ message: "Please fill in required fields" });
+    }
+    // Check if username already exists
+    const existingAccount = await Account.findOne({ username });
+    if (existingAccount) {
+      return res.status(400).json({ message: "Username already exists" });
+    }
+
+    // Create account with controlled fields
+    const accountData = {
+      email,
+      username,
+      dateOfBirth,
+      gender,
+      phoneNumber,
+      address,
+      password, // Ensure this is hashed in the model or middleware
+    };
+
+    const account = new Account(accountData);
+    const newAccount = await account.save();
+
+    res.status(201).json({ data: newAccount });
   } catch (error) {
-    console.log(error)
+    console.error("Error adding account:", error);
+    res.status(500).json({
+      message: "Server error when adding account",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
-}
+};
 
 const getAllAccount = async (req, res) => {
   const searchValue = req.query;
@@ -65,10 +92,9 @@ const updateAccount = async (req, res) => {
     }
 
     // Define allowed fields to update
-    const { email, username, dateOfBirth, gender, phoneNumber, address } = req.body;
+    const { email, dateOfBirth, gender, phoneNumber, address } = req.body;
     const updateData = {
       ...(email && { email }),
-      ...(username && { username }),
       ...(dateOfBirth && { dateOfBirth }),
       ...(gender !== undefined && { gender }), // Allow falsey values like false
       ...(phoneNumber && { phoneNumber }),

@@ -6,6 +6,7 @@ import { DeleteOutlined, EditOutlined, LoadingOutlined, SearchOutlined } from '@
 import { Button, Input, Table } from 'antd';
 import dayjs from 'dayjs';
 import Cookies from 'js-cookie';
+import UpdateAccountModal from '../../../components/modal/updateAccountModal';
 
 interface AccountListResponse {
     data: {
@@ -28,6 +29,10 @@ const ManageAccount: React.FC = () => {
     );
     const [searchTerm, setSearchTerm] = useState(searchParams.get('username') || '');
     const pageSize = 7;
+    // Modal state
+    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
+    const [isAddModalVisible, setIsAddModalVisible] = useState(false) // State for add modal
+    const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
 
     const {
         data: accounts,
@@ -41,7 +46,6 @@ const ManageAccount: React.FC = () => {
 
     const dataAccount = accounts?.accounts ?? [];
     const totalAccount = accounts?.totalItems ?? 0;
-
     // Filter out the current user's account
     const filteredDataAccount = dataAccount.filter((account) =>
         account.username !== userData?.username
@@ -107,8 +111,15 @@ const ManageAccount: React.FC = () => {
         {
             title: 'Update',
             key: 'update',
-            render: (_: any) => (
-                <Button type="primary" icon={<EditOutlined />} />
+            render: (_: any, record: Account) => (
+                <Button
+                    type='primary'
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                        setSelectedChildId(record._id) // Set the selected customer ID
+                        setIsDetailModalVisible(true) // Show the modal
+                    }}
+                />
             ),
         },
         {
@@ -120,6 +131,11 @@ const ManageAccount: React.FC = () => {
         },
     ];
 
+    // Handle modal close
+    const handleDetailModalClose = () => {
+        setIsDetailModalVisible(false)
+        setSelectedChildId(null)
+    }
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
             <div style={{ marginBottom: 16 }}>
@@ -151,6 +167,11 @@ const ManageAccount: React.FC = () => {
                     },
                 }}
             />
+            <UpdateAccountModal
+                    visible={isDetailModalVisible}
+                    id={selectedChildId}
+                    onClose={handleDetailModalClose}
+                  />
         </div>
     );
 };
