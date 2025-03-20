@@ -7,12 +7,13 @@ import {
   ShoppingCartOutlined,
 } from '@ant-design/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSyringe } from '@fortawesome/free-solid-svg-icons'
+import { faBox } from '@fortawesome/free-solid-svg-icons'
 import { Menu, Layout } from 'antd'
 import type { MenuProps } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import Logo from '../../../assets/Logo.png'
+import './Navbar.css'
 
 const { Header } = Layout
 
@@ -38,7 +39,7 @@ const Navbar: React.FC = () => {
       {
         key: 'products',
         label: 'Sản phẩm',
-        icon: <FontAwesomeIcon icon={faSyringe} />,
+        icon: <FontAwesomeIcon icon={faBox} />,
         url: '/products?pageNumber=1&pageSize=12',
       },
       {
@@ -91,6 +92,7 @@ const Navbar: React.FC = () => {
         }}
       >
         <div
+        className="logo-container"
           style={{
             display: 'flex',
             alignItems: 'center',

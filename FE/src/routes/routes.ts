@@ -9,7 +9,6 @@ import ShowAllProductsManager from '../Pages/Products/ShowAllProductsCustomer'
 import { LayoutRoute } from '../types/routes'
 import ProductsDetailCustomer from '../Pages/Products/ProductsDetailCustomer'
 import CartDetails from '../Pages/Cart/CartDetails'
-import ManagerLayout from '../components/layout/StaffLayout'
 import ManageCategory from '../Pages/Manager/Manager.category'
 import ProductManagement from '../components/Manager/ProductManager/ProductManager'
 import Order from '../Pages/Order/Order'
@@ -18,6 +17,8 @@ import ManageAccount from '../Pages/Manager/Account/ManageAccount'
 import UserProfile from '../Pages/Profile/userProfile'
 import EditProfile from '../Pages/Profile/editProfile'
 import Staff from '../Pages/Staff/Staff'
+import ManagerLayout from '../components/layout/ManagerLayout'
+import StaffLayout from '../components/layout/StaffLayout'
 
 const routes: LayoutRoute[] = [
   {
@@ -52,7 +53,7 @@ const routes: LayoutRoute[] = [
         path: '/profile',
         component: UserProfile,
       },
-      {
+      { 
         path: '/profile/edit-profile',
         component: EditProfile,
       },
@@ -105,7 +106,7 @@ const routes: LayoutRoute[] = [
   },
 
   {
-    layout: ManagerLayout,
+    layout: StaffLayout,
     data: [
       {
         path: '/staff',

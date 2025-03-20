@@ -3,6 +3,8 @@ import { Layout } from 'antd'
 import Navbar from './Navbar/Navbar'
 import Cookies from 'js-cookie'
 import { useEffect } from 'react'
+import Footer from './Footer/Footer'
+
 const { Content } = Layout
 
 function MainLayout() {
@@ -35,6 +37,7 @@ function MainLayout() {
       >
         <Outlet />
       </Content>
+      <Footer/>
     </Layout>
   )
 }

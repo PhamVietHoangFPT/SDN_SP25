@@ -95,3 +95,90 @@ export default function ProductsDetailCustomer() {
     </>
   )
 }
+// import { useParams } from 'react-router-dom';
+// import { useGetProductDetailCustomerQuery } from '../../features/product/productAPI';
+// import {  InputNumber, notification } from 'antd';
+// import { Products } from '../../types/product';
+// import { useState } from 'react';
+// import { useAddToCartMutation } from '../../features/cart/cartAPI';
+// import Cookies from 'js-cookie';
+// import { useNavigate } from 'react-router-dom';
+// import './ProductsDetailCustomer.css';
+
+// interface ProductsResponse {
+//   data: Products;
+//   isLoading: boolean;
+// }
+
+// export default function ProductsDetailCustomer() {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const { data, isLoading } = useGetProductDetailCustomerQuery<ProductsResponse>(id);
+//   const [addToCart] = useAddToCartMutation();
+//   const [quantity, setQuantity] = useState(1);
+//   const token = Cookies.get('userToken');
+
+//   const handleAddToCart = async () => {
+//     try {
+//       const result = await addToCart({ productId: id, quantity }).unwrap();
+//       notification.success({
+//         message: 'Success',
+//         description: result.message,
+//         placement: 'topRight',
+//       });
+//     } catch (error: any) {
+//       notification.error({
+//         message: 'Error',
+//         description: error.data.message as string,
+//         placement: 'topRight',
+//       });
+//     }
+//   };
+
+//   if (isLoading) return <p>Loading...</p>;
+
+//   return (
+//     <div className="product-detail-container">
+//       <div className="product-card">
+//         <div className="product-card-header">{data.name}</div>
+//         <img
+//           alt={data.name}
+//           src={data.images}
+//           className="product-card-image"
+//         />
+//         <div className="product-card-content">
+//           <p>
+//             <strong>Price:</strong> {data.price.toLocaleString()} VND
+//           </p>
+//           <p>
+//             <strong>Description:</strong> {data.description}
+//           </p>
+//           <p>
+//             <strong>Category:</strong> {data.category?.name}
+//           </p>
+//           <p>
+//             <strong>Stock:</strong> {data.stock} products
+//           </p>
+//           <div className="quantity-add-container">
+//             <InputNumber
+//               min={1}
+//               max={data.stock}
+//               value={quantity}
+//               onChange={(value) => setQuantity(value ?? 1)}
+//               className="quantity-input"
+//             />
+//             {token ? (
+//               <button className="action-btn" onClick={() => handleAddToCart()}>
+//                 Add to Cart
+//               </button>
+//             ) : (
+//               <button className="action-btn" onClick={() => navigate('/login')}>
+//                 Đăng nhập để tiếp tục
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }

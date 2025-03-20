@@ -62,7 +62,7 @@ export const ProductSlider = () => {
                 flexDirection: 'column',
               }}
             >
-              <Image src='${product.image}' />
+              <Image src={product.images} />
               <Title level={4}>{product.name}</Title>
               <Paragraph style={{ flexGrow: 1 }}>
                 {product.description}

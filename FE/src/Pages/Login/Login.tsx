@@ -112,7 +112,7 @@ export default function Login() {
                       <Link
                         to='/register'
                         style={{
-                          color: '#0062E6', // Màu xanh để nổi bật
+                          color: '#34c759', // Màu xanh để nổi bật
                           fontWeight: 'bold',
                           textDecoration: 'none',
                         }}
@@ -128,7 +128,11 @@ export default function Login() {
                         loading={isLoading}
                         size='large'
                         block
-                        style={{ fontSize: '18px', height: '50px' }}
+                        style={{
+                          fontSize: '18px',
+                          height: '50px',
+                          background: '#34c759',
+                        }}
                       >
                         Đăng nhập
                       </Button>

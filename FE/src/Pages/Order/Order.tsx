@@ -109,7 +109,9 @@ export default function Order() {
       ),
     },
   ]
-
+  console.log('Component rendered, status:', status)
+  console.log('Query data:', data)
+  console.log('isLoading:', isLoading)
   return (
     <div>
       <h2>Orders</h2>

@@ -51,8 +51,6 @@ const ManageCategory: React.FC = () => {
   const totalCategory = categories?.totalItems ?? 0
   const [deleteCategory, { isLoading: isDeleting }] =
     useDeleteCategoryMutation()
-
-
    const handleDelete = (_id: string) => {
           Modal.confirm({
               title: 'Confirm Deletion',
