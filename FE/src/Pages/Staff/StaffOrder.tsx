@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useGetOrdersQuery } from '../../features/order/orderAPI'
+import { useGetOrdersQuery, useUpdateOrderMutation } from '../../features/order/orderAPI'
 import { Order as OrderType } from '../../types/order'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Table, Select, Spin, Tag, Button } from 'antd'
+import { Table, Select, Spin, Tag, Button, message } from 'antd'
 
 const { Option } = Select
 
@@ -12,6 +12,7 @@ const validStatuses = [
   'Delivered',
   'Cancelled',
   'Paid',
+  'Refunded'
 ]
 
 interface OrderResponse {
@@ -25,6 +26,7 @@ export default function StaffOrder() {
   const navigate = useNavigate()
 
   const { data, isLoading } = useGetOrdersQuery<OrderResponse>({ status })
+  const [updateOrder, { isLoading: isUpdating }] = useUpdateOrderMutation()
 
   const updateURL = useCallback(() => {
     const params = new URLSearchParams()
@@ -35,10 +37,43 @@ export default function StaffOrder() {
   useEffect(() => {
     const handler = setTimeout(() => {
       updateURL()
-    }, 500) // Debounce 500ms
-
+    }, 500)
     return () => clearTimeout(handler)
   }, [updateURL])
+
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      await updateOrder({ id: orderId, status: newStatus }).unwrap()
+      message.success(`Order status updated to ${newStatus}`)
+    } catch (error) {
+      message.error('Failed to update order status')
+    }
+  }
+
+  const productColumns = [
+    {
+      title: 'Product Name',
+      dataIndex: ['product', 'name'],
+      key: 'name',
+    },
+    {
+      title: 'Price',
+      dataIndex: ['product', 'price'],
+      key: 'price',
+      render: (price: number) => `${price.toLocaleString()} VND`,
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Subtotal',
+      key: 'subtotal',
+      render: (record: any) =>
+        `${(record.product.price * record.quantity).toLocaleString()} VND`,
+    },
+  ]
 
   const columns = [
     {
@@ -48,7 +83,7 @@ export default function StaffOrder() {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: 'Product',
+      title: 'Products',
       dataIndex: 'products',
       key: 'products',
       render: (products: any[]) =>
@@ -62,9 +97,10 @@ export default function StaffOrder() {
         products.reduce((sum, p) => sum + p.quantity, 0),
     },
     {
-      title: 'Total',
+      title: 'Total Amount',
       dataIndex: 'total',
       key: 'total',
+      render: (total: number) => `${total.toLocaleString()} VND`,
     },
     {
       title: 'Status',
@@ -91,15 +127,55 @@ export default function StaffOrder() {
       ),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: 'Actions',
+      key: 'actions',
       render: (record: OrderType) => (
-        <Button
-          type='link'
-          onClick={() => navigate(`/staff/orders/${record._id}`)}
-        >
-          View
-        </Button>
+        <div>
+          {record.status === 'Processing' && (
+            <>
+              <Button
+                type='primary'
+                size='small'
+                onClick={() => handleStatusChange(record._id, 'Pending')}
+                loading={isUpdating}
+                style={{ marginRight: 8 }}
+              >
+                Confirm
+              </Button>
+              <Button
+                type='default'
+                size='small'
+                danger
+                onClick={() => handleStatusChange(record._id, 'Cancelled')}
+                loading={isUpdating}
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+          {record.status === 'Paid' && (
+            <>
+              <Button
+                type='primary'
+                size='small'
+                onClick={() => handleStatusChange(record._id, 'Delivered')}
+                loading={isUpdating}
+                style={{ marginRight: 8 }}
+              >
+                Delivered
+              </Button>
+              <Button
+                type='default'
+                size='small'
+                danger
+                onClick={() => handleStatusChange(record._id, 'Refunded')}
+                loading={isUpdating}
+              >
+                Refunded
+              </Button>
+            </>
+          )}
+        </div>
       ),
     },
   ]
@@ -123,7 +199,22 @@ export default function StaffOrder() {
       {isLoading ? (
         <Spin size='large' />
       ) : (
-        <Table dataSource={data || []} columns={columns} rowKey='_id' />
+        <Table
+          dataSource={data || []}
+          columns={columns}
+          rowKey='_id'
+          expandable={{
+            expandedRowRender: (record) => (
+              <Table
+                columns={productColumns}
+                dataSource={record.products}
+                pagination={false}
+                rowKey="_id"
+              />
+            ),
+            rowExpandable: (record) => record.products && record.products.length > 0,
+          }}
+        />
       )}
     </div>
   )

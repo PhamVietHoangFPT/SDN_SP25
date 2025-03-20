@@ -13,6 +13,7 @@ import type { MenuProps } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import Logo from '../../../assets/Logo.png'
+import './Navbar.css'
 
 const { Header } = Layout
 
@@ -91,6 +92,7 @@ const Navbar: React.FC = () => {
         }}
       >
         <div
+        className="logo-container"
           style={{
             display: 'flex',
             alignItems: 'center',
