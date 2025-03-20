@@ -7,7 +7,7 @@ import {
   ShoppingCartOutlined,
 } from '@ant-design/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSyringe } from '@fortawesome/free-solid-svg-icons'
+import { faBox } from '@fortawesome/free-solid-svg-icons'
 import { Menu, Layout } from 'antd'
 import type { MenuProps } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
       {
         key: 'products',
         label: 'Sản phẩm',
-        icon: <FontAwesomeIcon icon={faSyringe} />,
+        icon: <FontAwesomeIcon icon={faBox} />,
         url: '/products?pageNumber=1&pageSize=12',
       },
       {

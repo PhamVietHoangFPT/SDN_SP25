@@ -141,13 +141,14 @@ export default function ShowAllProductsCustomer() {
                     }
                     className='w-full'
                     onClick={() => navigate(`/products/${product._id}`)}
+                    style={{ height: '430px' }}
                   >
                     <Meta
                       title={product.name}
                       description={product.category?.name}
                     />
                     <p className='text-lg font-semibold text-red-500 mt-2'>
-                      ${product.price}
+                      {product.price} VND
                     </p>
                     <p className='text-sm text-gray-500'>
                       Đã bán: {product.sold} | Còn trong kho: {product.stock}
