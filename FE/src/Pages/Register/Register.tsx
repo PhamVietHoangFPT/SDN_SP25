@@ -277,7 +277,7 @@ export default function Register() {
                       <Link
                         to='/login'
                         style={{
-                          color: '#0062E6', // Màu xanh để nổi bật
+                          color: '#34c759', // Màu xanh để nổi bật
                           fontWeight: 'bold',
                           textDecoration: 'none',
                         }}
@@ -292,6 +292,7 @@ export default function Register() {
                         loading={isLoading}
                         block
                         size='large'
+                        style={{ background: '#34c759' }}
                       >
                         Đăng ký
                       </Button>
