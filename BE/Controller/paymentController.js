@@ -1,136 +1,139 @@
 const Order = require("../Models/Order");
-const qs = require("qs");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
+const moment = require("moment");
 require("dotenv").config();
 
 const payOrderWithVNPay = async (req, res) => {
-  try {
-    const { orderId } = req.params;
+  process.env.TZ = "Asia/Ho_Chi_Minh";
 
-    // 🔹 Kiểm tra ID hợp lệ
-    if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      return res.status(400).json({ error: "Invalid order ID" });
-    }
-
-    const order = await Order.findById(orderId);
-    if (!order) {
-      return res.status(404).json({ error: "Order not found" });
-    }
-
-    if (order.status !== "Pending") {
-      return res.status(400).json({ error: "Order not eligible for payment" });
-    }
-
-    // 🔹 Định dạng tổng tiền (VNPay yêu cầu VND, không có dấu thập phân)
-    const total = Math.round(order.total) * 100;
-
-    if (!total || total <= 0) {
-      return res.status(400).json({ error: "Invalid total amount" });
-    }
-
-    // 🔹 Tạo thời gian giao dịch
-    const createDate = new Date()
-      .toISOString()
-      .replace(/[^0-9]/g, "")
-      .substring(0, 14);
-
-    // 🔹 Tạo các tham số VNPay
-    let vnp_Params = {
-      vnp_Version: "2.1.0",
-      vnp_Command: "pay",
-      vnp_TmnCode: process.env.VNP_TMNCODE,
-      vnp_Locale: "vn",
-      vnp_CurrCode: "VND",
-      vnp_TxnRef: orderId, // Sử dụng ID của Order
-      vnp_OrderInfo: `Payment for order ${orderId}`,
-      vnp_OrderType: "billpayment",
-      vnp_Amount: total,
-      vnp_ReturnUrl: process.env.VNP_RETURNURL,
-      vnp_IpAddr:
-        req.headers["x-forwarded-for"] || req.connection.remoteAddress, // Lấy IP khách hàng
-      vnp_CreateDate: createDate,
-    };
-
-    // 🔹 Sắp xếp tham số theo thứ tự từ điển
-    vnp_Params = Object.fromEntries(Object.entries(vnp_Params).sort());
-
-    // 🔹 Tạo chữ ký bảo mật (Secure Hash)
-    const signData = qs.stringify(vnp_Params, { encode: false });
-    const hmac = crypto.createHmac("sha512", process.env.VNP_HASHSECRET);
-    const signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-
-    vnp_Params.vnp_SecureHash = signed;
-
-    // 🔹 Tạo URL thanh toán VNPay
-    const vnpUrl = `${process.env.VNP_URL}?${qs.stringify(vnp_Params, {
-      encode: false,
-    })}`;
-
-    res.json({ message: "Payment URL generated", payment_url: vnpUrl });
-  } catch (error) {
-    console.error("VNPay Payment Error:", error);
-    res.status(500).json({
-      error: "Error processing VNPay payment",
-      details: error.message,
-    });
+  const { orderId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(orderId)) {
+    return res.status(400).json({ error: "Invalid order ID" });
   }
+
+  const order = await Order.findById(orderId);
+  if (!order) {
+    return res.status(404).json({ error: "Order not found" });
+  }
+
+  if (order.status !== "Pending") {
+    return res.status(400).json({ error: "Order not eligible for payment" });
+  }
+
+  const tmnCode = process.env.VNP_TMNCODE?.trim();
+  const secretKey = process.env.VNP_HASHSECRET?.trim();
+  const returnUrl = process.env.VNP_RETURNURL?.trim();
+
+  if (!tmnCode || !secretKey || !returnUrl) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Missing VNPay configuration in .env" });
+  }
+
+  let date = new Date();
+  let createDate = moment(date).format("YYYYMMDDHHmmss");
+  let expireDate = moment(date).add(15, "minutes").format("YYYYMMDDHHmmss");
+  let ipAddr = req.ip || "127.0.0.1";
+
+  let vnp_Params = {
+    vnp_Version: "2.1.0",
+    vnp_Command: "pay",
+    vnp_TmnCode: tmnCode,
+    vnp_Locale: "vn",
+    vnp_CurrCode: "VND",
+    vnp_TxnRef: orderId,
+    vnp_OrderInfo: `Payment for order ${orderId}`,
+    vnp_OrderType: "billpayment",
+    vnp_Amount: Math.round(Number(order.total) * 100),
+    vnp_ReturnUrl: returnUrl,
+    vnp_IpAddr: ipAddr,
+    vnp_CreateDate: createDate,
+    vnp_ExpireDate: expireDate,
+  };
+
+  // Sort parameters and create signature
+  const sortedParams = Object.keys(vnp_Params)
+    .sort()
+    .map((key) => `${key}=${vnp_Params[key]}`)
+    .join("&");
+
+  const hmac = crypto.createHmac("sha512", secretKey);
+  const signed = hmac.update(Buffer.from(sortedParams, "utf-8")).digest("hex");
+
+  vnp_Params["vnp_SecureHash"] = signed;
+
+  // VNPay payment URL
+  const vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+  const paymentUrl = `${vnpUrl}?${sortedParams}&vnp_SecureHash=${signed}`;
+
+  console.log("✅ Sign Data:", sortedParams);
+  console.log("✅ Signed Hash:", signed);
+  console.log("✅ Payment URL:", paymentUrl);
+
+  res.json({ success: true, paymentUrl: paymentUrl });
 };
+
 const confirmVNPayPayment = async (req, res) => {
+  const { vnp_ResponseCode, vnp_TxnRef, vnp_SecureHash } = req.query;
+
   try {
-    const vnp_Params = req.query;
-
-    // 🔹 Lấy Secure Hash từ VNPay và loại bỏ nó khỏi danh sách params
-    const secureHash = vnp_Params.vnp_SecureHash;
-    delete vnp_Params.vnp_SecureHash;
-
-    // 🔹 Sắp xếp tham số theo thứ tự từ điển
-    const sortedParams = Object.fromEntries(Object.entries(vnp_Params).sort());
-    const signData = qs.stringify(sortedParams, { encode: false });
-
-    // 🔹 Tạo chữ ký hash để xác minh tính toàn vẹn của dữ liệu
-    const hmac = crypto.createHmac("sha512", process.env.VNP_HASHSECRET);
-    const signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-
-    // 🔹 Kiểm tra chữ ký hợp lệ không
-    if (secureHash !== signed) {
-      return res.status(400).json({ error: "Invalid VNPay signature" });
+    if (!vnp_ResponseCode || !vnp_TxnRef || !vnp_SecureHash) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
     }
 
-    // 🔹 Kiểm tra trạng thái thanh toán thành công
-    if (vnp_Params.vnp_ResponseCode === "00") {
-      const orderId = vnp_Params.vnp_TxnRef; // Lấy orderId từ mã giao dịch
+    const order = await Order.findById(vnp_TxnRef);
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order ID not found" });
+    }
 
-      // 🔹 Kiểm tra Order hợp lệ
-      if (!mongoose.Types.ObjectId.isValid(orderId)) {
-        return res.status(400).json({ error: "Invalid order ID" });
-      }
+    // Remove vnp_SecureHash from query params and sort
+    const vnp_Params = { ...req.query };
+    delete vnp_Params["vnp_SecureHash"];
 
-      // 🔹 Cập nhật trạng thái Order thành "Delivered"
-      const updatedOrder = await Order.findByIdAndUpdate(
-        orderId,
-        { status: "Delivered" },
-        { new: true }
-      );
+    const sortedParams = Object.keys(vnp_Params)
+      .sort()
+      .map((key) => `${key}=${vnp_Params[key]}`)
+      .join("&");
 
-      if (!updatedOrder) {
-        return res.status(404).json({ error: "Order not found" });
-      }
+    // Verify signature
+    const hmac = crypto.createHmac(
+      "sha512",
+      process.env.VNP_HASHSECRET?.trim()
+    );
+    const expectedHash = hmac
+      .update(Buffer.from(sortedParams, "utf-8"))
+      .digest("hex");
 
-      return res.json({
-        message: "Payment successful",
-        order: updatedOrder,
-        vnp_Params,
-      });
+    console.log("🔍 Expected Hash:", expectedHash);
+    console.log("🔍 Received Hash:", vnp_SecureHash);
+
+    if (expectedHash !== vnp_SecureHash) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid payment signature" });
+    }
+
+    let redirectUrl =
+      vnp_ResponseCode !== "00"
+        ? "https://selling-clothes-website-five.vercel.app/failed"
+        : "https://selling-clothes-website-five.vercel.app/success";
+
+    if (vnp_ResponseCode === "00") {
+      order.status = "Paid";
+      await order.save();
     } else {
-      return res.status(400).json({ error: "Payment failed", vnp_Params });
+      await Order.findByIdAndDelete(vnp_TxnRef);
     }
+
+    res.redirect(redirectUrl);
   } catch (error) {
-    console.error("VNPay Confirmation Error:", error);
-    res.status(500).json({
-      error: "Error verifying VNPay payment",
-      details: error.message,
-    });
+    console.error("Payment confirmation error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

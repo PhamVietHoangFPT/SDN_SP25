@@ -1,17 +1,15 @@
 const express = require("express");
-const accountIdRouter = express.Router();
-const accountController = require("../Controller/profileController");
+const router = express.Router();
+const accountControllers = require("../Controller/profileController");
 
 const checkRole = require("../middlewares/authMiddleware");
-const { customer } = require("../constant/constant");
+const { customer } = require("../constant/constant").customer;
 
-accountIdRouter
-  .route("/", checkRole(customer))
-  .get(accountController.getProfile);
-accountIdRouter
+router.route("/", checkRole(customer)).get(accountControllers.getProfile);
+router
   .route("/editProfile", checkRole(customer))
-  .put(accountController.editProfile);
-accountIdRouter
+  .put(accountControllers.editProfile);
+router
   .route("/changePassword", checkRole(customer))
-  .put(accountController.editPassword);
-module.exports = accountIdRouter;
+  .put(accountControllers.editPassword);
+module.exports = router;

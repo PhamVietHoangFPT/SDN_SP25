@@ -23,7 +23,8 @@ const cartRoutes = require("./routes/cartRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const categoryRouter = require("./routes/category.route");
-const accountIdRouter = require("./routes/profileRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+
 var app = express();
 const uri = process.env.MONGO_URI;
 const connect = mongoose.connect(uri);
@@ -62,7 +63,7 @@ app.use("/cart", cartRoutes);
 app.use("/payment", paymentRoutes);
 app.use("/category", categoryRouter);
 app.use("/booking", bookingRoutes);
-app.use("/profile", accountIdRouter);
+app.use("/profile", profileRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -4,7 +4,11 @@ const jwt = require("jsonwebtoken");
 
 const getProfile = async (req, res) => {
   try {
-    const { email } = req.params;
+    if (!req.account || !req.account.email) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const { email } = req.account; // Lấy email từ token
 
     const account = await Account.findOne({ email });
     if (!account) {
@@ -58,7 +62,7 @@ const editProfile = async (req, res) => {
         phoneNumber: updatedAccount.phoneNumber,
         address: updatedAccount.address,
       },
-      process.env.ACCESS_TOKEN_SECRET,
+      process.env.ACCESS_TOKEN,
       { expiresIn: "7d" }
     );
 
