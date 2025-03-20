@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { useGetOrdersQuery } from '../../features/order/orderAPI'
 import { Order as OrderType } from '../../types/order'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Table, Select, Spin, Tag } from 'antd'
+import { Table, Select, Spin, Tag, Button } from 'antd'
+import { CreditCardOutlined } from '@ant-design/icons'
 
 const { Option } = Select
 
@@ -77,9 +78,9 @@ export default function Order() {
               ? 'orange'
               : text === 'Processing'
                 ? 'blue'
-                : text === 'Shipped'
+                : text === 'Delivered'
                   ? 'purple'
-                  : text === 'Delivered'
+                  : text === 'Paid'
                     ? 'green'
                     : text === 'Cancelled'
                       ? 'red'
@@ -88,6 +89,23 @@ export default function Order() {
         >
           {text}
         </Tag>
+      ),
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (record: OrderType) => (
+        <>
+          {record.status === 'Pending' && (
+            <Button
+              type='primary'
+              icon={<CreditCardOutlined />}
+              style={{ marginLeft: 8 }}
+            >
+              Pay
+            </Button>
+          )}
+        </>
       ),
     },
   ]

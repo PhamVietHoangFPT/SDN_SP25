@@ -17,6 +17,7 @@ import StaffOrder from '../Pages/Staff/StaffOrder'
 import ManageAccount from '../Pages/Manager/Account/ManageAccount'
 import UserProfile from '../Pages/Profile/userProfile'
 import EditProfile from '../Pages/Profile/editProfile'
+import Staff from '../Pages/Staff/Staff'
 
 const routes: LayoutRoute[] = [
   {
@@ -106,6 +107,11 @@ const routes: LayoutRoute[] = [
   {
     layout: ManagerLayout,
     data: [
+      {
+        path: '/staff',
+        component: Staff,
+        role: ['Staff'],
+      },
       {
         path: '/staff/orders',
         component: StaffOrder,
